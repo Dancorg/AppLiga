@@ -101,7 +101,7 @@ Returns:
 
 Testing
 
-Tests are written using an HTTP-based approach (Playwright).
+Tests are e2e written using an HTTP-based approach (Playwright).
 
 Example:
 

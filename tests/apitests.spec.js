@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-const localhost = `http://localhost:3000`;
+const localhost = 'http://localhost:3000';
 
 // create user support functions
 async function createUser(email, username, password, role, request) {
@@ -45,25 +45,7 @@ async function createLeague(name, request) {
     }
   });
   return response;
-} 
-
-/*
-test(`has title`, async ({ page }) => {
-  await page.goto(`https://playwright.dev/`);
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
-
-test(`get started link`, async ({ page }) => {
-  await page.goto(`https://playwright.dev/`);
-
-  // Click the get started link.
-  await page.getByRole(`link`, { name: `Get started` }).click();
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole(`heading`, { name: `Installation` })).toBeVisible();
-}); */
+}
 
 test.afterEach(async ({ request }) => {
   // clean up the usual 4 test users we create in the tests
@@ -100,8 +82,6 @@ test.afterEach(async ({ request }) => {
   }
 });
 
-// now we go through the tests and remove all the Clean up comments
-
 
 test(`create user`, async ({ request }) => {
   const response = await createUser(`test@example.com`, `testuser`, `password123`, `admin`, request);
@@ -109,9 +89,6 @@ test(`create user`, async ({ request }) => {
   expect(response.status()).toBe(201);
   const responseData = await response.json();
   expect(responseData).toHaveProperty(`token`);
-
-  //clean up - delete the created user
-  //await deleteUser(`test@example.com`, request);
 });
 
 test(`login user`, async ({ request }) => {
@@ -128,9 +105,6 @@ test(`login user`, async ({ request }) => {
   expect(response.status()).toBe(200);
   const responseData = await response.json();
   expect(responseData).toHaveProperty(`token`);
-
-  //clean up - delete the created user
-  //await deleteUser(`test@example.com`, request);
 });
 
 test(`login user invalid password`, async ({ request }) => {
@@ -147,9 +121,6 @@ test(`login user invalid password`, async ({ request }) => {
   expect(response.status()).toBe(400);
   const responseData = await response.json();
   expect(responseData).toHaveProperty(`message`, `Invalid email or password`);
-
-  //clean up - delete the created user
-  //await deleteUser(`test@example.com`, request);
 });
 
 test(`login user non-existent email`, async ({ request }) => { // same as non-existent user but more specific
@@ -182,9 +153,6 @@ test(`register user already exists`, async ({ request }) => {
   expect(response.status()).toBe(400);
   const responseData = await response.json();
   expect(responseData).toHaveProperty(`message`, `User already exists`);
-
-  //clean up - delete the created user
-  //await deleteUser(`test@example.com`, request);
 });
 
 test(`register user missing email`, async ({ request }) => {
@@ -199,9 +167,6 @@ test(`register user missing email`, async ({ request }) => {
   expect(response.status()).toBe(400);
   const responseData = await response.json();
   expect(responseData).toHaveProperty(`message`, `Invalid email format`);
-
-  //clean up - delete the created user if it was created
-  //await deleteUser(`test@example.com`, request);
 });
 
 test(`register user missing password`, async ({ request }) => {
@@ -217,9 +182,6 @@ test(`register user missing password`, async ({ request }) => {
   expect(response.status()).toBe(400);
   const responseData = await response.json();
   expect(responseData).toHaveProperty(`message`, `Password must be at least 8 characters long and include both letters and numbers`);
-
-  // clean up - delete the created user if it was created
-  //await deleteUser(`test@example.com`, request);
 });
 
 test(`register user missing username`, async ({ request }) => {
@@ -235,9 +197,6 @@ test(`register user missing username`, async ({ request }) => {
   expect(response.status()).toBe(400);
   const responseData = await response.json();
   expect(responseData).toHaveProperty(`message`, `Username and role are required`);
-
-    // clean up - delete the created user if it was created
-  //await deleteUser(`test@example.com`, request);
 });
 
 test(`register user missing role`, async ({ request }) => {
@@ -253,9 +212,6 @@ test(`register user missing role`, async ({ request }) => {
   expect(response.status()).toBe(400);
   const responseData = await response.json();
   expect(responseData).toHaveProperty(`message`, `Username and role are required`);
-
-  // clean up - delete the created user if it was created
-  //await deleteUser(`test@example.com`, request);
 });
 
 test(`create league`, async ({ request }) => {

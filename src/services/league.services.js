@@ -30,17 +30,15 @@ export const createLeague = async (name) => {
     }
 };
 
-// remove all handling of responses from this file, this should be a service file, not a controller file. Move all response handling to the controller file, and just return data or throw errors from this file. Also move all db operations to a model file, and call those from this service file. This will make the code cleaner and more maintainable.
-
 export async function joinLeague(req, res) { 
     try {
         const userId = req.user.userId;
         console.log('User ID from token:', userId, 'Comes from: ', req.user);
-        const { leagueId } = req.params; // or from the body?
+        const { leagueId } = req.params;
 
         const [league] = await pool.query('SELECT * FROM leagues WHERE league_id = ?', [leagueId]);
         
-        if (!league) { // why not league.length === 0?
+        if (!league) {
             return res.status(404).json({ message: 'League not found' });
         }
 
