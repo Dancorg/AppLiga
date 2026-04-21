@@ -121,3 +121,10 @@ Future Improvements
 - Player statistics (win rate, history)
 - Real-time match updates (WebSockets)
 - Frontend integration
+
+
+----------------------------------
+
+Frontend
+
+WIP

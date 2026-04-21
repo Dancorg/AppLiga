@@ -1,0 +1,12 @@
+{
+  "name": "nodetest",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.5.0"
+  }
+}
