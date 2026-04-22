@@ -2,7 +2,9 @@ import {pool} from '../config/db.js';
 
 async function getPlayersByDate(dateId) {
     const [rows] = await pool.query(
-        'SELECT user_id FROM participations WHERE date_id = ?',
+        `SELECT p.user_id, u.name FROM participations p
+         JOIN sc_users u ON u.user_id = p.user_id
+         WHERE p.date_id = ?`,
         [dateId]
     );
     return rows;

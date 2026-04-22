@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Match } from "../../types"
 import * as api from "./api";
+import { sortMatchesNoConsecutivePlayers } from "../../utils/sortMatches";
 
 export function useMatches(dateId: number) {
     const [matches, setMatches] = useState<Match[]>([]);
@@ -13,7 +14,7 @@ export function useMatches(dateId: number) {
             const res = await api.getMatchesByDate(dateId);
             console.log(dateId, 'Fetch Matches Response:', res);
 
-            setMatches(res);
+            setMatches(sortMatchesNoConsecutivePlayers(res));
         } catch (err: unknown) {
             setError((err as { message: string }).message ?? "Error fetching matches");
         }finally {

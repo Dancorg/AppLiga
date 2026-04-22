@@ -27,7 +27,7 @@ export const joinDate = async (req, res) => {
         const { dateId } = req.params;
 
         const joinDate = await dateService.dateParticipation(userId, dateId);
-        res.status(201).json(joinDate);
+        res.status(201).json({message: 'Joined date successfully'});
     } catch (error) {
         console.error('Error joining date:', error);
         res.status(500).json({message: 'Error joining date'});

@@ -17,7 +17,7 @@ export default function DateCard({ date }: { date: DateItem }) {
                 {!loading && !error && participants.length === 0 && <p>No participants yet.</p>}
                 <ul style={styles.list}>
                     {participants.map((p) => (
-                        <li key={p.user_id}>Player {p.user_id}</li>
+                        <li key={p.user_id}>{p.name}</li>
                     ))}
                 </ul>
             </div>

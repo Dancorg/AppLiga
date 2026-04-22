@@ -1,7 +1,9 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMatches } from "../hooks";
 
 export default function MatchList({ dateId }: { dateId: number}) {
+    const navigate = useNavigate();
     const{
         matches,
         loading,
@@ -27,9 +29,9 @@ export default function MatchList({ dateId }: { dateId: number}) {
 
             <ul>
                 {matches.map((m) => (
-                    <li key={m.id}>
-                        Player {m.player1Id} vs Player {m.player2Id}
-                        <button onClick={() => handleDeleteMatch(m.id)}>
+                    <li key={m.id} onClick={() => navigate(`/matches/${m.id}`, { state: { match: m } })} style={{ cursor: "pointer" }}>
+                        {m.player1Name} vs {m.player2Name}
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteMatch(m.id); }}>
                             Delete
                         </button>
                     </li>

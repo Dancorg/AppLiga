@@ -44,7 +44,7 @@ async function getMatches(){
 
 async function getMatchesById(dateId){
     try{
-        const matches = await MatchModel.getMatchesByDateId(dateId);
+        const matches = await MatchModel.getMatchesByDateIdWithPlayers(dateId);
         return matches;
     } catch (error){
         throw new Error('Error finding matches', error);

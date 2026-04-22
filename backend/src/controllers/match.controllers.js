@@ -63,23 +63,19 @@ async function getMatch(req, res){
 async function submitScore(req, res){
     try{ 
         const { matchId } = req.params;
-        const { player1_hits, player2_hits } = req.body;
+        const { player1_score, player2_score } = req.body;
 
-        // validate input
-        if (
-            player1_hits < 0 || player1_hits > 5 ||
-            player2_hits < 0 || player2_hits > 5
-        ) {
-            return res.status(400).json({message: 'Invalid hits'});
+        if (player1_score == null || player2_score == null || player1_score < 0 || player2_score < 0) {
+            return res.status(400).json({ message: 'Scores must be non-negative numbers' });
         }
-        
-        const players = await matchService.getPlayersFromMatch(matchId); 
+
+        const players = await matchService.getPlayersFromMatch(matchId);
 
         if (players.length !== 2){
             return res.status(400).json({message: 'Match must have 2 players'});
         }
 
-        const[p1,p2] = players;
+        const [p1, p2] = players;
 
         const existing = await matchService.getScoreFromMatch(matchId);
 
@@ -87,15 +83,12 @@ async function submitScore(req, res){
             return res.status(400).json({message: 'Match already scored'});
         }
 
-        const p1Score = 5 - player1_hits; // replace 5 with league-level variable
-        const p2Score = 5 - player2_hits;
-
         try{
-            await matchService.insertScoresToMatch(matchId, p1.user_id, p1Score, p2.user_id, p2Score);
+            await matchService.insertScoresToMatch(matchId, p1.user_id, player1_score, p2.user_id, player2_score);
             res.status(201).json({
                 results: [
-                    { user_id: p1.user_id, score: p1Score},
-                    { user_id: p2.user_id, score: p2Score}
+                    { user_id: p1.user_id, score: player1_score },
+                    { user_id: p2.user_id, score: player2_score }
                 ]
             })
         } catch (error) {

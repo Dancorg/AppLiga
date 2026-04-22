@@ -7,9 +7,11 @@ export interface League {
 export interface Match {
     id: number;
     player1Id: number;
+    player1Name: string;
     player2Id: number;
-    score1?: number;
-    score2?: number;
+    player2Name: string;
+    score1?: number | null;
+    score2?: number | null;
 }
 
 export interface DateItem {
@@ -20,4 +22,5 @@ export interface DateItem {
 
 export interface Participant {
     user_id: number;
+    name: string;
 }

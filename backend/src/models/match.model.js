@@ -14,6 +14,25 @@ async function getMatchesByDateId(dateId) {
     return rows;
 }
 
+async function getMatchesByDateIdWithPlayers(dateId) {
+    const [rows] = await pool.query(
+        `SELECT m.id AS id,
+                mp1.user_id AS player1Id, u1.name AS player1Name,
+                mp2.user_id AS player2Id, u2.name AS player2Name,
+                s1.score AS score1, s2.score AS score2
+         FROM matches m
+         JOIN matchplayers mp1 ON mp1.match_id = m.id
+         JOIN matchplayers mp2 ON mp2.match_id = m.id AND mp2.user_id > mp1.user_id
+         JOIN sc_users u1 ON u1.user_id = mp1.user_id
+         JOIN sc_users u2 ON u2.user_id = mp2.user_id
+         LEFT JOIN scores s1 ON s1.match_id = m.id AND s1.user_id = mp1.user_id
+         LEFT JOIN scores s2 ON s2.match_id = m.id AND s2.user_id = mp2.user_id
+         WHERE m.date_id = ?`,
+        [dateId]
+    );
+    return rows;
+}
+
 async function deleteMatchById(matchId) {
     const [result] = await pool.query('DELETE FROM matches WHERE match_id = ?', [matchId]);
     return result.affectedRows > 0;
@@ -56,6 +75,7 @@ const matchModel = {
     createMatch,
     addPlayerToMatch,
     getMatchesByDateId,
+    getMatchesByDateIdWithPlayers,
     deleteMatchById,
     removePlayerFromMatch,
     getMatches,

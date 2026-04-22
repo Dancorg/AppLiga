@@ -47,7 +47,7 @@ export async function getDate(dateId) {
 export async function dateParticipation(userId, dateId) { 
     try {
         const leagueId = await dateModel.getLeagueOfDate(dateId);
-        const players = await enrollmentModel.getPlayersByLeagueId(leagueId);
+        const players = await enrollmentModel.getPlayersByLeagueId(leagueId.league_id);
         const isEnrolled = players.some(player => player.user_id === userId);
         if(!isEnrolled){
             throw new Error('User is not enrolled in this league');

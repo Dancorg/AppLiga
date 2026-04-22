@@ -401,10 +401,50 @@ test(`create match`, async ({ request }) => { // this test is too long and shoul
   });
   console.log(`Date creation response:`, await dateResponse.json());
 
-  
   expect(dateResponse.status()).toBe(201);
   const dateResponseData = await dateResponse.json();
   expect(dateResponseData).toHaveProperty(`date_id`);
+
+  // enroll all users in the date
+  const participateResponse1 = await request.post(`${localhost}/api/dates/${dateResponseData.date_id}/join`, {
+    headers: {
+      Authorization: `Bearer ${token1}`
+    }
+  });
+  expect(participateResponse1.status()).toBe(201);
+
+  const participateResponse2 = await request.post(`${localhost}/api/dates/${dateResponseData.date_id}/join`, {
+    headers: {
+      Authorization: `Bearer ${token2}`
+    }
+  });
+  expect(participateResponse2.status()).toBe(201);
+  const participateResponse3 = await request.post(`${localhost}/api/dates/${dateResponseData.date_id}/join`, {
+    headers: {
+      Authorization: `Bearer ${token3}`
+    }
+  });
+  expect(participateResponse3.status()).toBe(201);
+
+  const participateResponse4 = await request.post(`${localhost}/api/dates/${dateResponseData.date_id}/join`, {
+    headers: {
+      Authorization: `Bearer ${token4}`
+    }
+  });
+  expect(participateResponse4.status()).toBe(201);
+  const participateResponse5 = await request.post(`${localhost}/api/dates/${dateResponseData.date_id}/join`, {
+    headers: {
+      Authorization: `Bearer ${token5}`
+    }
+  });
+  expect(participateResponse5.status()).toBe(201);
+
+  const participateResponse6 = await request.post(`${localhost}/api/dates/${dateResponseData.date_id}/join`, {
+    headers: {
+      Authorization: `Bearer ${token6}`
+    }
+  });
+  expect(participateResponse6.status()).toBe(201);
 
   console.log(`date id for match creation:`, dateResponseData.date_id, `league id:`, leagueData.id);
 
@@ -458,6 +498,20 @@ test(`create and resolve match`, async ({request}) => {
   });
   const dateResponseData = await dateResponse.json();
 
+  const participateResponse1 = await request.post(`${localhost}/api/dates/${dateResponseData.date_id}/join`, {
+    headers: {
+      Authorization: `Bearer ${token1}`
+    }
+  });
+  expect(participateResponse1.status()).toBe(201);
+
+  const participateResponse2 = await request.post(`${localhost}/api/dates/${dateResponseData.date_id}/join`, {
+    headers: {
+      Authorization: `Bearer ${token2}`
+    }
+  });
+  expect(participateResponse2.status()).toBe(201);
+
   const matchResponse = await request.post(
     `${localhost}/api/leagues/dates/${dateResponseData.date_id}/matches`, {
     headers: {
@@ -465,6 +519,7 @@ test(`create and resolve match`, async ({request}) => {
     }
   });
   const matchResponseData = await matchResponse.json();
+  console.log("Match response", matchResponseData);
   matchResponseData.forEach(match => {
     expect(match).toHaveProperty(`matchId`);
     expect(match).toHaveProperty(`player1`);
