@@ -1,19 +1,26 @@
 import MatchList from "../../matches/components/MatchList";
 import { useParticipants } from "../hooks";
+import { useAuth } from "../../../auth/AuthContext";
 import type { DateItem } from "../api";
+import EnrollUserToDate from "./EnrollUserToDate";
 
 export default function DateCard({ date }: { date: DateItem }) {
-    const { participants, loading, error } = useParticipants(date.date_id);
+    const { user } = useAuth();
+    const { participants, loading, error, joinDate, enrollUser } = useParticipants(date.date_id);
+    const isParticipant = participants.some(p => p.user_id === user?.userId);
 
     return (
         <div style={styles.card}>
-            <h4>Date {date.date_number}</h4>
-            <p>{date.date_date}</p>
+            <h4>{String(date.date_date).slice(0, 10)}</h4>
 
             <div>
                 <strong>Participants</strong>
                 {loading && <p>Loading...</p>}
                 {error && <p>{error}</p>}
+                {!isParticipant && (
+                    <button onClick={joinDate} disabled={loading}>Join Date</button>
+                )}
+                {user?.role === 'admin' && <EnrollUserToDate onEnroll={enrollUser} />}
                 {!loading && !error && participants.length === 0 && <p>No participants yet.</p>}
                 <ul style={styles.list}>
                     {participants.map((p) => (

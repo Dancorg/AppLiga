@@ -229,7 +229,7 @@ test(`create league`, async ({ request }) => {
 
   expect(response.status()).toBe(201);
   const responseData = await response.json();
-  expect(responseData).toHaveProperty(`id`);
+  expect(responseData).toHaveProperty(`league_id`);
   expect(responseData).toHaveProperty(`name`, `Test League Create`);
 });
 
@@ -244,7 +244,7 @@ test(`delete league`, async ({ request }) => {
   const responseData = await response.json();
 
   // now delete the league
-  const deleteResponse = await request.delete(`${localhost}/api/leagues/${responseData.id}`);
+  const deleteResponse = await request.delete(`${localhost}/api/leagues/${responseData.league_id}`);
 
   expect(deleteResponse.status()).toBe(200);
   const deleteResponseData = await deleteResponse.json();
@@ -276,7 +276,7 @@ test(`join league`, async ({ request }) => {
   const leagueData = await leagueResponse.json();
 
   // now join the league
-  const joinResponse = await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  const joinResponse = await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -322,11 +322,10 @@ test(`create date for league`, async ({ request }) => {
   const { token } = await loginResponse.json();
 
   // now create a date for the league
-  const dateResponse = await request.post(`${localhost}/api/leagues/${leagueData.id}/dates`, {
+  const dateResponse = await request.post(`${localhost}/api/leagues/${leagueData.league_id}/dates`, {
     headers: {
       Authorization: `Bearer ${token}`
     }, data: {
-      date_number: 1,
       date_date: `2024-12-01`
     }
   });
@@ -359,43 +358,42 @@ test(`create match`, async ({ request }) => { // this test is too long and shoul
   const { token: token6 } = await loginUser('test6@example.com','password123', request);
 
   // enroll all users in the league
-  await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token1}`
     }
   });
-  await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token2}`
     }
   });
-  await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token3}`
     }
   });
-  await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token4}`
     }
   });
-  await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token5}`
     }
   });
-  await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token6}`
     }
   });
 
   // create a date for the league first since matches require a date
-  const dateResponse = await request.post(`${localhost}/api/leagues/${leagueData.id}/dates/`, {
+  const dateResponse = await request.post(`${localhost}/api/leagues/${leagueData.league_id}/dates/`, {
     headers: {
       Authorization: `Bearer ${token1}`
     }, data: {
-      date_number: 1,
       date_date: `2024-12-01`
     }
   });
@@ -446,7 +444,7 @@ test(`create match`, async ({ request }) => { // this test is too long and shoul
   });
   expect(participateResponse6.status()).toBe(201);
 
-  console.log(`date id for match creation:`, dateResponseData.date_id, `league id:`, leagueData.id);
+  console.log(`date id for match creation:`, dateResponseData.date_id, `league id:`, leagueData.league_id);
 
   // now create a match for that date
   const matchResponse = await request.post(
@@ -477,22 +475,21 @@ test(`create and resolve match`, async ({request}) => {
   const { token: token1 } = await loginUser('test1@example.com','password123', request);
   const { token: token2 } = await loginUser('test2@example.com','password123', request);
 
-  await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token1}`
     }
   });
-  await request.post(`${localhost}/api/leagues/${leagueData.id}/join`, {
+  await request.post(`${localhost}/api/leagues/${leagueData.league_id}/join`, {
     headers: {
       Authorization: `Bearer ${token2}`
     }
   });
 
-  const dateResponse = await request.post(`${localhost}/api/leagues/${leagueData.id}/dates/`, {
+  const dateResponse = await request.post(`${localhost}/api/leagues/${leagueData.league_id}/dates/`, {
     headers: {
       Authorization: `Bearer ${token1}`
     }, data: {
-      date_number: 1,
       date_date: `2024-12-01`
     }
   });

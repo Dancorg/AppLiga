@@ -5,7 +5,7 @@ export type { DateItem, Participant };
 
 export const createDate = (
     leagueId: number,
-    data: { date_number: number, date_date: string}
+    data: { date_date: string }
 ) =>
     apiFetch<DateItem>(`/leagues/${leagueId}/dates`, {
         method: "POST",
@@ -17,3 +17,12 @@ export const getDatesByLeague = (leagueId: number) =>
 
 export const getParticipantsByDate = (dateId: number) =>
     apiFetch<Participant[]>(`/dates/${dateId}/participants`);
+
+export const joinDate = (dateId: number) =>
+    apiFetch(`/dates/${dateId}/join`, { method: 'POST' });
+
+export const enrollUserToDate = (dateId: number, username: string) =>
+    apiFetch(`/dates/${dateId}/enroll`, {
+        method: 'POST',
+        body: JSON.stringify({ username }),
+    });

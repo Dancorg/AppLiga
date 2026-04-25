@@ -1,6 +1,5 @@
 import { useLeagues } from "../features/leagues/hooks";
 import { useNavigate } from "react-router-dom";
-
 export default function LeaguesPage() {
     const { leagues, loading } = useLeagues();
     const navigate = useNavigate();
@@ -8,9 +7,9 @@ export default function LeaguesPage() {
     if (loading) return <p>Loading...</p>;
 
     if (leagues.length === 0) return (
-        <div style={{ padding: "20px"}}>
+        <div>
             <h1>Leagues</h1>
-            <p>No hay ligas disponibles aún</p>
+            <p>No leagues available yet.</p>
         </div>
     )
 

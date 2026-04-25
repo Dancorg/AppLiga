@@ -14,10 +14,16 @@ async function generateMatchesForDate(dateId) {
         throw new Error('Not enough players to create matches');
     }
 
-    // Create matches for the date using round-robin pairing
+    const existing = await MatchModel.getMatchesByDateIdWithPlayers(dateId);
+    const existingPairs = new Set(
+        existing.map(m => [m.player1Id, m.player2Id].sort((a, b) => a - b).join('-'))
+    );
+
     const matches = [];
     for (let i = 0; i < players.length; i++) {
         for (let j = i + 1; j < players.length; j++) {
+            const pair = [players[i].user_id, players[j].user_id].sort((a, b) => a - b).join('-');
+            if (existingPairs.has(pair)) continue;
             const matchId = await MatchModel.createMatch(dateId);
             await MatchModel.addPlayerToMatch(matchId, players[i].user_id);
             await MatchModel.addPlayerToMatch(matchId, players[j].user_id);
@@ -89,7 +95,7 @@ async function insertScoresToMatch(matchId, p1_id, p1Score, p2_id, p2Score){
 
 const matchService = {
     generateMatchesForDate,
-    deleteMatchForDate,
+    deleteMatch: deleteMatchForDate,
     getMatches,
     getMatch,
     getMatchesById,

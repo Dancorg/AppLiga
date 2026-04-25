@@ -3,12 +3,11 @@ import MatchList from "../../matches/components/MatchList";
 export default function DateCard({
     date,
 }: {
-    date: {id?:number; date_number: number; date_date: string};
+    date: { id?: number; date_date: string };
 }) {
     return (
         <div style={styles.card}>
-            <h4>Date {date.date_number}</h4>
-            <p>{date.date_date}</p>
+            <h4>{date.date_date}</h4>
 
             {date.id && <MatchList dateId={date.id} />}
         </div>

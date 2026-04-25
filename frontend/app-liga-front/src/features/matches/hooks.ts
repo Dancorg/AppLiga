@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Match } from "../../types"
 import * as api from "./api";
 import { sortMatchesNoConsecutivePlayers } from "../../utils/sortMatches";
@@ -47,6 +47,12 @@ export function useMatches(dateId: number) {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const onFocus = () => fetchMatches();
+        window.addEventListener('focus', onFocus);
+        return () => window.removeEventListener('focus', onFocus);
+    }, [dateId]);
 
     return {
         matches,

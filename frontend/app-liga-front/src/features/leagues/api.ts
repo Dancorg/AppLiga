@@ -5,6 +5,8 @@ export type { League };
 
 export const getLeagues = () => apiFetch<League[]>("/leagues/");
 
+export const getLeagueById = (leagueId: number) => apiFetch<League>(`/leagues/${leagueId}`);
+
 export const createLeague = (name: string ) =>
     apiFetch<League>("/leagues/create", {
         method: "POST",
@@ -18,3 +20,9 @@ export const joinLeague = (leagueId: number) =>
 
 export const getLeaderboard = (leagueId: number) =>
     apiFetch(`/leagues/${leagueId}/leaderboard`);
+
+export const enrollUserByUsername = (leagueId: number, username: string) =>
+    apiFetch(`/leagues/${leagueId}/enroll`, {
+        method: 'POST',
+        body: JSON.stringify({ username }),
+    });

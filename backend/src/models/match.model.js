@@ -34,7 +34,7 @@ async function getMatchesByDateIdWithPlayers(dateId) {
 }
 
 async function deleteMatchById(matchId) {
-    const [result] = await pool.query('DELETE FROM matches WHERE match_id = ?', [matchId]);
+    const [result] = await pool.query('DELETE FROM matches WHERE id = ?', [matchId]);
     return result.affectedRows > 0;
 }
 

@@ -188,7 +188,7 @@ export default function MatchPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-    page: { padding: "20px", maxWidth: "520px" },
+    page: { maxWidth: "520px" },
     back: { marginBottom: "16px", cursor: "pointer" },
     scoreboard: {
         display: "flex",

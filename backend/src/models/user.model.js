@@ -1,5 +1,10 @@
 import {pool} from '../config/db.js';
 
+async function findUserByUsername(username) {
+    const [rows] = await pool.query('SELECT * FROM sc_users WHERE name = ?', [username]);
+    return rows[0];
+}
+
 async function findUserByEmail(email) {
     const [rows] = await pool.query('SELECT * FROM sc_users WHERE email = ?', [email]);
     return rows[0];
@@ -19,6 +24,7 @@ async function deleteUserByEmail(email) { // TODO delete by user id
 
 const userModel = {
     findUserByEmail,
+    findUserByUsername,
     createUser,
     deleteUserByEmail
 };

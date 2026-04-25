@@ -2,14 +2,15 @@ import dateModel from "../models/date.model.js";
 import ParticipationModel from "../models/participation.model.js";
 import enrollmentModel from "../models/enrollment.model.js";
 
-export async function createDateForLeague(leagueId, date_number, date_date) {
+export async function createDateForLeague(leagueId, date_date) {
     try {
-        const newDate = await dateModel.createDate(leagueId, date_number, date_date);
-        console.log(newDate);
-        return newDate;
+        const existing = await dateModel.findDateByLeagueAndDate(leagueId, date_date);
+        if (existing) throw new Error('A date with this date already exists for this league');
+        const date_id = await dateModel.createDate(leagueId, date_date);
+        return { date_id, date_date };
     } catch (error) {
         console.error('Error creating date:', error);
-        throw new Error('Error creating date');
+        throw error;
     }
 };
 

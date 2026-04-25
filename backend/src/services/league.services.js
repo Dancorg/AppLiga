@@ -21,7 +21,7 @@ export const createLeague = async (name) => {
 
         await conn.commit();
 
-        return { id: leagueId, name };
+        return { league_id: leagueId, name };
     } catch (error) {
         await conn.rollback();
         throw error;

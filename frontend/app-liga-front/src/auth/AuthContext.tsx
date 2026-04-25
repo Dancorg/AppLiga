@@ -10,6 +10,7 @@ type AuthContextType = {
 
 type User = {
     userId: number;
+    username: string;
     role: string;
 };
 

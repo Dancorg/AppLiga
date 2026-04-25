@@ -1,11 +1,13 @@
 import {pool} from '../config/db.js';
 
-async function createDate(leagueId, date_number, date_date) {
-    console.log('Creating date with leagueId:', leagueId, 'date_number:', date_number, 'date_date:', date_date);
-    const [result] = await pool.query('INSERT INTO dates (league_id, date_number, date_date) VALUES (?, ?, ?)', 
-        [leagueId, date_number, date_date]);
-    console.log(result.insertId);
+async function createDate(leagueId, date_date) {
+    const [result] = await pool.query('INSERT INTO dates (league_id, date_date) VALUES (?, ?)', [leagueId, date_date]);
     return result.insertId;
+}
+
+async function findDateByLeagueAndDate(leagueId, date_date) {
+    const [rows] = await pool.query('SELECT * FROM dates WHERE league_id = ? AND date_date = ?', [leagueId, date_date]);
+    return rows[0];
 }
 
 async function findDateById(dateId) {
@@ -37,6 +39,7 @@ async function deleteDateById(dateId) {
 const dateModel = {
     createDate,
     findDateById,
+    findDateByLeagueAndDate,
     getLeagueOfDate,
     findDatesByLeagueId,
     findDates,

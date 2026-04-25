@@ -6,16 +6,44 @@ export function useParticipants(dateId: number) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const fetchParticipants = async () => {
+        setLoading(true);
+        try {
+            const res = await api.getParticipantsByDate(dateId);
+            setParticipants(res);
+        } catch (err: unknown) {
+            setError((err as { message: string }).message ?? "Unexpected error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const joinDate = async () => {
+        try {
+            setError(null);
+            await api.joinDate(dateId);
+            await fetchParticipants();
+        } catch (err: unknown) {
+            setError((err as { message: string }).message ?? "Error joining date");
+        }
+    };
+
     useEffect(() => {
         if (!dateId) return;
-        setLoading(true);
-        api.getParticipantsByDate(dateId)
-            .then(setParticipants)
-            .catch((err: { message: string }) => setError(err.message ?? "Unexpected error"))
-            .finally(() => setLoading(false));
+        fetchParticipants();
     }, [dateId]);
 
-    return { participants, loading, error };
+    const enrollUser = async (username: string) => {
+        try {
+            setError(null);
+            await api.enrollUserToDate(dateId, username);
+            await fetchParticipants();
+        } catch (err: unknown) {
+            setError((err as { message: string }).message ?? 'Error enrolling user');
+        }
+    };
+
+    return { participants, loading, error, joinDate, enrollUser };
 }
 
 export function useDates(leagueId: number, autoFetch = true) {
@@ -36,16 +64,11 @@ export function useDates(leagueId: number, autoFetch = true) {
     };
 
     const createNewDate = async (date_date: string) => {
-        const nextNumber = Math.max(0, ...dates.map((d) => d.date_number)) +1;
-
         try {
             setLoading(true);
             setError(null);
 
-            const newDate = await api.createDate(leagueId, {
-                date_number: nextNumber,
-                date_date,
-            });
+            const newDate = await api.createDate(leagueId, { date_date });
 
             setDates((prev) => [...prev, newDate]);
 

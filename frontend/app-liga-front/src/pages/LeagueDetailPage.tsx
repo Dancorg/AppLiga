@@ -1,24 +1,89 @@
-import { useParams } from "react-router-dom";
-import DatesManager from "../features/dates/components/DatesManager"
+import { useParams, useNavigate } from "react-router-dom";
+import DatesManager from "../features/dates/components/DatesManager";
 import { useLeagueDetail } from "../features/leagues/hooks";
+import { useAuth } from "../auth/AuthContext";
+import EnrollUser from "../features/leagues/components/EnrollUser";
 
 export default function LeagueDetailPage() {
     const { leagueId } = useParams();
     const id = Number(leagueId);
 
-    const { handleJoin, loading, error } = useLeagueDetail(id);
+    const { leagueName, leaderboard, handleJoin, loading, error } = useLeagueDetail(id);
+    const navigate = useNavigate();
+    const { user } = useAuth();
 
-    return(
-        <div style={{ padding: "20px" }}>
-            <h1>League {id}</h1>
+    return (
+        <div style={styles.page}>
+            <button onClick={() => navigate('/leagues')} style={styles.back}>← Back</button>
 
-            <button onClick={handleJoin} disabled={loading}>
+            <h1 style={styles.title}>{leagueName ?? `League ${id}`}</h1>
+
+            <button onClick={handleJoin} disabled={loading} style={styles.joinBtn}>
                 Join League
             </button>
 
-            <DatesManager leagueId={id} />
+            {user?.role === 'admin' && <EnrollUser leagueId={id} />}
 
-            {error && <p style={{color: "red"}}>{error}</p>}
+            {leaderboard.length > 0 && (
+                <div style={styles.card}>
+                    <h2 style={styles.sectionTitle}>Leaderboard</h2>
+                    <table style={styles.table}>
+                        <thead>
+                            <tr>
+                                {['#', 'Player', 'W', 'L', 'Pts'].map(h => (
+                                    <th key={h} style={styles.th}>{h}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {leaderboard.map(entry => (
+                                <tr key={entry.user_id}>
+                                    <td style={styles.td}>{entry.position}</td>
+                                    <td style={{ ...styles.td, fontWeight: 600 }}>{entry.name}</td>
+                                    <td style={styles.td}>{entry.wins}</td>
+                                    <td style={styles.td}>{entry.losses}</td>
+                                    <td style={{ ...styles.td, fontWeight: 700 }}>{entry.total_points}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+
+            <div style={styles.card}>
+                <DatesManager leagueId={id} />
+            </div>
+
+            {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
-    )
+    );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+    page: { maxWidth: '640px' },
+    back: { marginBottom: '16px', cursor: 'pointer' },
+    title: { margin: '0 0 16px', fontSize: '28px', fontWeight: 700 },
+    joinBtn: { padding: '8px 20px', cursor: 'pointer', marginBottom: '16px' },
+    card: {
+        border: '1px solid #e5e7eb',
+        borderRadius: '8px',
+        background: '#f9fafb',
+        padding: '16px',
+        marginTop: '20px',
+    },
+    sectionTitle: { margin: '0 0 12px', fontSize: '18px', fontWeight: 600 },
+    table: { width: '100%', borderCollapse: 'collapse' },
+    th: {
+        textAlign: 'left',
+        padding: '6px 10px',
+        fontSize: '12px',
+        color: '#6b7280',
+        borderBottom: '1px solid #e5e7eb',
+        fontWeight: 600,
+    },
+    td: {
+        padding: '8px 10px',
+        fontSize: '14px',
+        borderBottom: '1px solid #f3f4f6',
+    },
+};

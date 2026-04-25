@@ -44,6 +44,10 @@ export default function LoginPage() {
                 <button type="submit" disabled={loading} style={styles.button}>
                     {loading ? "Logging in..." : "Login"}
                 </button>
+                <p style={styles.hint}>
+                    Not a user?{' '}
+                    <span style={styles.link} onClick={() => navigate('/register')}>Register</span>
+                </p>
             </form>
         </div>
     );
@@ -74,8 +78,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "10px",
     cursor: "pointer",
   },
-  error: {
-    color: "red",
-    fontSize: "14px",
-  },
+  error: { color: "red", fontSize: "14px" },
+  hint: { textAlign: "center", fontSize: "13px", color: "#6b7280", margin: 0 },
+  link: { color: "#2563eb", cursor: "pointer", textDecoration: "underline" },
 };

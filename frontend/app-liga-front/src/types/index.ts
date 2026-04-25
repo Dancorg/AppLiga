@@ -16,11 +16,20 @@ export interface Match {
 
 export interface DateItem {
     date_id: number;
-    date_number: number;
     date_date: string;
 }
 
 export interface Participant {
     user_id: number;
     name: string;
+}
+
+export interface LeaderboardEntry {
+    position: number;
+    user_id: number;
+    name: string;
+    matches_played: number;
+    total_points: number;
+    wins: number;
+    losses: number;
 }
