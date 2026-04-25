@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { enrollUserByUsername } from '../api';
+import { useTranslation } from 'react-i18next';
 
 export default function EnrollUser({ leagueId }: { leagueId: number }) {
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
 
     const handleEnroll = async () => {
         if (!username.trim()) return;
@@ -14,7 +16,7 @@ export default function EnrollUser({ leagueId }: { leagueId: number }) {
         setError(null);
         try {
             await enrollUserByUsername(leagueId, username.trim());
-            setMessage(`${username} enrolled successfully`);
+            setMessage(`${username} ${t('enroll.success')}`);
             setUsername('');
         } catch (err: unknown) {
             setError((err as { message: string }).message);
@@ -25,17 +27,17 @@ export default function EnrollUser({ leagueId }: { leagueId: number }) {
 
     return (
         <div style={{ marginTop: '16px' }}>
-            <h3>Enroll a player</h3>
+            <h3>{t('enroll.title')}</h3>
             <div style={{ display: 'flex', gap: '8px' }}>
                 <input
                     type="text"
-                    placeholder="Username"
+                    placeholder={t('enroll.placeholder')}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleEnroll()}
                 />
                 <button onClick={handleEnroll} disabled={loading || !username.trim()}>
-                    Enroll
+                    {t('enroll.button')}
                 </button>
             </div>
             {message && <p style={{ color: 'green' }}>{message}</p>}

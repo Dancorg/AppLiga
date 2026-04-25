@@ -7,6 +7,12 @@ import LeagueDetailPage from "../pages/LeagueDetailPage";
 import MatchPage from "../pages/MatchPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "../components/Layout";
+import { useTranslation } from "react-i18next";
+
+function NotFound() {
+    const { t } = useTranslation();
+    return <p>{t('common.notFound')}</p>;
+}
 
 export default function AppRouter() {
     return(
@@ -20,7 +26,7 @@ export default function AppRouter() {
                     <Route path="/create-league" element={<ProtectedRoute><CreateLeaguePage /></ProtectedRoute>} />
                     <Route path="/leagues/:leagueId" element={<ProtectedRoute><LeagueDetailPage /></ProtectedRoute>} />
                     <Route path="/matches/:matchId" element={<ProtectedRoute><MatchPage /></ProtectedRoute>} />
-                    <Route path="*" element={<p>Page not found :(</p>} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </Layout>
         </BrowserRouter>

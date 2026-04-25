@@ -1,17 +1,25 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 export default function Navbar() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const { pathname } = useLocation();
+    const { t, i18n } = useTranslation();
 
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
 
-    const navLink = (label: string, to: string): React.CSSProperties => ({
+    const toggleLang = () => {
+        const next = i18n.language === 'es' ? 'en' : 'es';
+        i18n.changeLanguage(next);
+        localStorage.setItem('lang', next);
+    };
+
+    const navLink = (to: string): React.CSSProperties => ({
         ...styles.link,
         fontWeight: pathname === to ? 700 : 400,
         textDecoration: pathname === to ? 'underline' : 'none',
@@ -20,16 +28,19 @@ export default function Navbar() {
     return (
         <nav style={styles.nav}>
             <div style={styles.left}>
-                <span onClick={() => navigate('/leagues')} style={navLink('Leagues', '/leagues')}>
-                    Leagues
+                <span onClick={() => navigate('/leagues')} style={navLink('/leagues')}>
+                    {t('nav.leagues')}
                 </span>
                 {user?.role === 'admin' && (
-                    <span onClick={() => navigate('/create-league')} style={navLink('Create League', '/create-league')}>
-                        + Create League
+                    <span onClick={() => navigate('/create-league')} style={navLink('/create-league')}>
+                        {t('nav.createLeague')}
                     </span>
                 )}
             </div>
             <div style={styles.right}>
+                <button onClick={toggleLang} style={styles.langBtn}>
+                    {i18n.language === 'es' ? 'EN' : 'ES'}
+                </button>
                 {user && (
                     <span style={styles.chip}>
                         {user.username}
@@ -37,7 +48,7 @@ export default function Navbar() {
                     </span>
                 )}
                 <button onClick={handleLogout} style={styles.logoutBtn}>
-                    Logout
+                    {t('nav.logout')}
                 </button>
             </div>
         </nav>
@@ -70,6 +81,15 @@ const styles: Record<string, React.CSSProperties> = {
         borderRadius: '4px',
         padding: '1px 6px',
         color: '#6b7280',
+    },
+    langBtn: {
+        fontSize: '12px',
+        padding: '3px 10px',
+        cursor: 'pointer',
+        borderRadius: '4px',
+        border: '1px solid #d1d5db',
+        background: 'white',
+        fontWeight: 600,
     },
     logoutBtn: {
         fontSize: '13px',

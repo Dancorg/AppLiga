@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function EnrollUserToDate({ onEnroll }: { onEnroll: (username: string) => Promise<void> }) {
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
 
     const handleEnroll = async () => {
         if (!username.trim()) return;
@@ -13,7 +15,7 @@ export default function EnrollUserToDate({ onEnroll }: { onEnroll: (username: st
         setError(null);
         try {
             await onEnroll(username.trim());
-            setMessage(`${username} added to date`);
+            setMessage(`${username} ${t('enroll.success')}`);
             setUsername('');
         } catch (err: unknown) {
             setError((err as { message: string }).message);
@@ -27,13 +29,13 @@ export default function EnrollUserToDate({ onEnroll }: { onEnroll: (username: st
             <div style={{ display: 'flex', gap: '8px' }}>
                 <input
                     type="text"
-                    placeholder="Username"
+                    placeholder={t('dates.enrollPlaceholder')}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleEnroll()}
                 />
                 <button onClick={handleEnroll} disabled={loading || !username.trim()}>
-                    Add to date
+                    {t('dates.enrollButton')}
                 </button>
             </div>
             {message && <p style={{ color: 'green', margin: '4px 0' }}>{message}</p>}

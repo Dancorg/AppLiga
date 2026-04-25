@@ -1,0 +1,86 @@
+{
+    "nav": {
+        "leagues": "Leagues",
+        "createLeague": "+ Create League",
+        "logout": "Logout"
+    },
+    "leagues": {
+        "title": "Leagues",
+        "noLeagues": "No leagues available yet."
+    },
+    "leagueDetail": {
+        "back": "← Back",
+        "joinLeague": "Join League",
+        "leaderboard": "Leaderboard",
+        "columns": {
+            "position": "#",
+            "player": "Player",
+            "wins": "W",
+            "losses": "L",
+            "points": "Pts"
+        }
+    },
+    "createLeague": {
+        "title": "Create League",
+        "placeholder": "League name",
+        "submit": "Create"
+    },
+    "dates": {
+        "title": "Dates",
+        "noDates": "No dates yet",
+        "addDate": "Add Date",
+        "participants": "Participants",
+        "noParticipants": "No participants yet.",
+        "joinDate": "Join Date",
+        "enrollPlayer": "Add player",
+        "enrollPlaceholder": "Username",
+        "enrollButton": "Add to date"
+    },
+    "enroll": {
+        "title": "Enroll a player",
+        "placeholder": "Username",
+        "button": "Enroll",
+        "success": "enrolled"
+    },
+    "matches": {
+        "noMatches": "No matches yet",
+        "loading": "Loading matches..",
+        "generate": "Generate Matches",
+        "delete": "Delete",
+        "vs": "vs"
+    },
+    "matchPage": {
+        "back": "← Back",
+        "undo": "↩ Undo",
+        "submit": "Submit Score",
+        "submitting": "Submitting...",
+        "submitted": "Score submitted!",
+        "alreadyScored": "This match has already been scored.",
+        "clickToHit": "click to register hit"
+    },
+    "login": {
+        "title": "Login",
+        "email": "Email",
+        "password": "Password",
+        "submit": "Login",
+        "loading": "Logging in...",
+        "noAccount": "Not a user?",
+        "register": "Register"
+    },
+    "register": {
+        "title": "Register",
+        "email": "Email",
+        "username": "Username",
+        "password": "Password",
+        "rolePlayer": "Player",
+        "roleAdmin": "Admin",
+        "submit": "Register",
+        "loading": "Creating account...",
+        "hasAccount": "Already a user?",
+        "login": "Login"
+    },
+    "common": {
+        "loading": "Loading...",
+        "notFound": "Page not found :("
+    }
+}

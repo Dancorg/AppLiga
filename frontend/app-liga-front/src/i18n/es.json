@@ -1,0 +1,86 @@
+{
+    "nav": {
+        "leagues": "Ligas",
+        "createLeague": "+ Crear Liga",
+        "logout": "Cerrar sesión"
+    },
+    "leagues": {
+        "title": "Ligas",
+        "noLeagues": "No hay ligas disponibles aún."
+    },
+    "leagueDetail": {
+        "back": "← Atrás",
+        "joinLeague": "Unirse a la Liga",
+        "leaderboard": "Tabla de posiciones",
+        "columns": {
+            "position": "#",
+            "player": "Jugador",
+            "wins": "G",
+            "losses": "P",
+            "points": "Pts"
+        }
+    },
+    "createLeague": {
+        "title": "Crear Liga",
+        "placeholder": "Nombre de la liga",
+        "submit": "Crear"
+    },
+    "dates": {
+        "title": "Fechas",
+        "noDates": "Aún no hay fechas",
+        "addDate": "Agregar Fecha",
+        "participants": "Participantes",
+        "noParticipants": "Aún no hay participantes.",
+        "joinDate": "Unirse a la Fecha",
+        "enrollPlayer": "Agregar jugador",
+        "enrollPlaceholder": "Usuario",
+        "enrollButton": "Agregar a la fecha"
+    },
+    "enroll": {
+        "title": "Inscribir jugador",
+        "placeholder": "Usuario",
+        "button": "Inscribir",
+        "success": "Inscrito"
+    },
+    "matches": {
+        "noMatches": "Aún no hay combates",
+        "loading": "Cargando combates...",
+        "generate": "Generar Combates",
+        "delete": "Eliminar",
+        "vs": "vs"
+    },
+    "matchPage": {
+        "back": "← Atrás",
+        "undo": "↩ Deshacer",
+        "submit": "Enviar Resultado",
+        "submitting": "Enviando...",
+        "submitted": "¡Resultado enviado!",
+        "alreadyScored": "Este combate ya esta resuelto.",
+        "clickToHit": "clic para registrar golpe"
+    },
+    "login": {
+        "title": "Iniciar sesión",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "submit": "Iniciar sesión",
+        "loading": "Iniciando sesión...",
+        "noAccount": "¿No tienes cuenta?",
+        "register": "Registrarse"
+    },
+    "register": {
+        "title": "Registrarse",
+        "email": "Correo electrónico",
+        "username": "Usuario",
+        "password": "Contraseña",
+        "rolePlayer": "Jugador",
+        "roleAdmin": "Administrador",
+        "submit": "Registrarse",
+        "loading": "Creando cuenta...",
+        "hasAccount": "¿Ya tienes cuenta?",
+        "login": "Iniciar sesión"
+    },
+    "common": {
+        "loading": "Cargando...",
+        "notFound": "Página no encontrada :("
+    }
+}

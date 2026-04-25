@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import type { Match } from "../types";
 import { submitScore } from "../features/matches/api";
+import { useTranslation } from "react-i18next";
 
 const POINTS = { head: 3, torso: 2, arm: 1, legs: 1 } as const;
 type BodyArea = keyof typeof POINTS;
@@ -14,9 +15,10 @@ interface BodyTargetProps {
     flashColor: string;
     onHit: (pts: number) => void;
     disabled: boolean;
+    clickLabel: string;
 }
 
-function BodyTarget({ label, baseColor, flashColor, onHit, disabled }: BodyTargetProps) {
+function BodyTarget({ label, baseColor, flashColor, onHit, disabled, clickLabel }: BodyTargetProps) {
     const [flashing, setFlashing] = useState<BodyArea | null>(null);
 
     const hit = (area: BodyArea) => {
@@ -47,7 +49,7 @@ function BodyTarget({ label, baseColor, flashColor, onHit, disabled }: BodyTarge
                 <div style={box("arm", 28, 64)} onClick={() => hit("arm")} title="Arm (+1)" />
             </div>
             <div style={box("legs", 56, 60)} onClick={() => hit("legs")} title="Legs (+1)" />
-            <span style={{ fontSize: "11px", color: "#666" }}>click to register hit</span>
+            <span style={{ fontSize: "11px", color: "#666" }}>{clickLabel}</span>
         </div>
     );
 }
@@ -76,6 +78,7 @@ export default function MatchPage() {
     const { matchId } = useParams();
     const { state } = useLocation();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const match = state?.match as Match | undefined;
     const alreadyScored = match?.score1 != null && match?.score2 != null;
 
@@ -124,15 +127,10 @@ export default function MatchPage() {
 
     return (
         <div style={styles.page}>
-            <button onClick={() => navigate(-1)} style={styles.back}>← Back</button>
+            <button onClick={() => navigate(-1)} style={styles.back}>{t('matchPage.back')}</button>
 
-            {/* Scoreboard */}
             <div style={styles.scoreboard}>
-                <ScoreControls
-                    onAdd={() => addHit(1, 1)}
-                    onSubtract={() => addHit(1, -1)}
-                    disabled={done}
-                />
+                <ScoreControls onAdd={() => addHit(1, 1)} onSubtract={() => addHit(1, -1)} disabled={done} />
                 <div style={{ ...styles.scoreBlock, color: "#2563eb" }}>
                     <span style={styles.scoreName}>{p1}</span>
                     <span style={styles.scoreNumber}>{player1Score}</span>
@@ -142,47 +140,29 @@ export default function MatchPage() {
                     <span style={styles.scoreName}>{p2}</span>
                     <span style={styles.scoreNumber}>{player2Score}</span>
                 </div>
-                <ScoreControls
-                    onAdd={() => addHit(2, 1)}
-                    onSubtract={() => addHit(2, -1)}
-                    disabled={done}
-                />
+                <ScoreControls onAdd={() => addHit(2, 1)} onSubtract={() => addHit(2, -1)} disabled={done} />
             </div>
 
-            {/* Arena */}
             <div style={styles.arena}>
-                <BodyTarget
-                    label={p1}
-                    baseColor="#3b82f6"
-                    flashColor="#bfdbfe"
-                    onHit={(pts) => addHit(2, pts)}
-                    disabled={done}
-                />
+                <BodyTarget label={p1} baseColor="#3b82f6" flashColor="#bfdbfe" onHit={(pts) => addHit(2, pts)} disabled={done} clickLabel={t('matchPage.clickToHit')} />
                 <span style={styles.vs}>VS</span>
-                <BodyTarget
-                    label={p2}
-                    baseColor="#ef4444"
-                    flashColor="#fecaca"
-                    onHit={(pts) => addHit(1, pts)}
-                    disabled={done}
-                />
+                <BodyTarget label={p2} baseColor="#ef4444" flashColor="#fecaca" onHit={(pts) => addHit(1, pts)} disabled={done} clickLabel={t('matchPage.clickToHit')} />
             </div>
 
-            {/* Controls */}
             {!done && (
                 <div style={styles.controls}>
                     <button onClick={undo} disabled={history.length === 0} style={styles.undoBtn}>
-                        ↩ Undo
+                        {t('matchPage.undo')}
                     </button>
                     <button onClick={handleSubmit} disabled={loading} style={styles.submitBtn}>
-                        {loading ? "Submitting..." : "Submit Score"}
+                        {loading ? t('matchPage.submitting') : t('matchPage.submit')}
                     </button>
                 </div>
             )}
 
-            {submitted && <p style={{ color: "green" }}>Score submitted!</p>}
+            {submitted && <p style={{ color: "green" }}>{t('matchPage.submitted')}</p>}
             {error && <p style={{ color: "red" }}>{error}</p>}
-            {alreadyScored && !submitted && <p style={{ color: "gray" }}>This match has already been scored.</p>}
+            {alreadyScored && !submitted && <p style={{ color: "gray" }}>{t('matchPage.alreadyScored')}</p>}
         </div>
     );
 }
@@ -190,34 +170,12 @@ export default function MatchPage() {
 const styles: Record<string, React.CSSProperties> = {
     page: { maxWidth: "520px" },
     back: { marginBottom: "16px", cursor: "pointer" },
-    scoreboard: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "16px",
-        margin: "16px 0 28px",
-        padding: "16px",
-        border: "1px solid #e5e7eb",
-        borderRadius: "8px",
-        background: "#f9fafb",
-    },
-    scoreBlock: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "4px",
-        minWidth: "80px",
-    },
+    scoreboard: { display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", margin: "16px 0 28px", padding: "16px", border: "1px solid #e5e7eb", borderRadius: "8px", background: "#f9fafb" },
+    scoreBlock: { display: "flex", flexDirection: "column", alignItems: "center", gap: "4px", minWidth: "80px" },
     scoreName: { fontSize: "13px", fontWeight: 600 },
     scoreNumber: { fontSize: "40px", fontWeight: 700, lineHeight: 1 },
     dash: { fontSize: "32px", color: "#9ca3af" },
-    arena: {
-        display: "flex",
-        gap: "32px",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        marginBottom: "24px",
-    },
+    arena: { display: "flex", gap: "32px", alignItems: "flex-start", justifyContent: "center", marginBottom: "24px" },
     vs: { fontSize: "18px", fontWeight: 700, color: "#6b7280", marginTop: "80px" },
     controls: { display: "flex", gap: "12px", alignItems: "center" },
     undoBtn: { padding: "8px 16px", cursor: "pointer" },
