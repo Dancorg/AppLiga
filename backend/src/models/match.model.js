@@ -53,7 +53,8 @@ async function getMatch(matchId) {
 }
 
 async function getPlayers(matchId) {
-    const [players] = await pool.query('SELECT user_id FROM matchplayers WHERE match_id = ?', [matchId]);
+    const [players] = await pool.query('SELECT user_id FROM matchplayers WHERE match_id = ? ORDER BY user_id ASC', [matchId]);
+    console.log(`[getPlayers] matchId=${matchId} → raw DB rows:`, players);
     return players;
 }
 
@@ -63,6 +64,7 @@ async function getScore(matchId) {
 }
 
 async function insertScores(matchId, p1_id, p1Score, p2_id, p2Score) {
+    console.log(`[insertScores] INSERT — (user_id=${p1_id}, match_id=${matchId}, score=${p1Score}), (user_id=${p2_id}, match_id=${matchId}, score=${p2Score})`);
     await pool.query('INSERT INTO scores (user_id, match_id, score) VALUES (?,?,?),(?,?,?)',
         [
             p1_id, matchId, p1Score,

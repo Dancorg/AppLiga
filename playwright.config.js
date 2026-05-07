@@ -23,6 +23,13 @@ export default defineConfig({
             use: {
                 ...devices['Desktop Chrome'],
                 baseURL: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+                storageState: {
+                    cookies: [],
+                    origins: [{
+                        origin: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+                        localStorage: [{ name: 'lang', value: 'en' }],
+                    }],
+                },
             },
         },
     ],

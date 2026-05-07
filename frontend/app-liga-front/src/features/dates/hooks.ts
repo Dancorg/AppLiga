@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import * as api from "./api";
+import { useTimedMessage } from "../../hooks/useTimedMessage";
 
 export function useParticipants(dateId: number) {
     const [participants, setParticipants] = useState<api.Participant[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError, clearError] = useTimedMessage();
 
     const fetchParticipants = async () => {
         setLoading(true);
@@ -20,7 +21,7 @@ export function useParticipants(dateId: number) {
 
     const joinDate = async () => {
         try {
-            setError(null);
+            clearError();
             await api.joinDate(dateId);
             await fetchParticipants();
         } catch (err: unknown) {
@@ -35,7 +36,7 @@ export function useParticipants(dateId: number) {
 
     const enrollUser = async (username: string) => {
         try {
-            setError(null);
+            clearError();
             await api.enrollUserToDate(dateId, username);
             await fetchParticipants();
         } catch (err: unknown) {
@@ -49,7 +50,7 @@ export function useParticipants(dateId: number) {
 export function useDates(leagueId: number, autoFetch = true) {
     const [dates, setDates] = useState<api.DateItem[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError, clearError] = useTimedMessage();
 
     const fetchDates = async () => {
         try {
@@ -66,7 +67,7 @@ export function useDates(leagueId: number, autoFetch = true) {
     const createNewDate = async (date_date: string) => {
         try {
             setLoading(true);
-            setError(null);
+            clearError();
 
             const newDate = await api.createDate(leagueId, { date_date });
 

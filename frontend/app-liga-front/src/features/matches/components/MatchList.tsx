@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useMatches } from "../hooks";
 import { useAuth } from "../../../auth/AuthContext";
 import { useTranslation } from "react-i18next";
+import type { LeagueRules } from "../../../types";
 
-export default function MatchList({ dateId }: { dateId: number }) {
+export default function MatchList({ dateId, rules }: { dateId: number; rules: LeagueRules | null }) {
     const navigate = useNavigate();
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -26,7 +27,7 @@ export default function MatchList({ dateId }: { dateId: number }) {
 
             <ul>
                 {matches.map((m) => (
-                    <li key={m.id} onClick={() => navigate(`/matches/${m.id}`, { state: { match: m } })} style={{ cursor: "pointer" }}>
+                    <li key={m.id} onClick={() => navigate(`/matches/${m.id}`, { state: { match: m, rules } })} style={{ cursor: "pointer" }}>
                         {m.player1Name} {t('matches.vs')} {m.player2Name}
                         {m.score1 != null && m.score2 != null && (
                             <span style={{ marginLeft: "8px", fontWeight: "bold" }}>

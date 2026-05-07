@@ -9,7 +9,7 @@ export default function DateCard({
         <div style={styles.card}>
             <h4>{date.date_date}</h4>
 
-            {date.id && <MatchList dateId={date.id} />}
+            {date.id && <MatchList dateId={date.id} rules={null} />}
         </div>
     );
 }

@@ -4,7 +4,12 @@ async function getLeaderboardByLeagueId(leagueId) {
     const [rows] = await pool.query(`
         SELECT u.user_id, u.name,
             COUNT(DISTINCT mp.match_id) AS matches_played,
-            COALESCE(SUM(s.score), 0) AS total_points,
+            COALESCE(SUM(
+                CASE
+                WHEN l.scoring_mode = 'difference' THEN GREATEST(0, s.score - opponent.score)
+                ELSE s.score
+                END
+            ), 0) AS total_points,
             SUM(
                 CASE
                 WHEN s.score > opponent.score THEN 1
@@ -24,6 +29,7 @@ async function getLeaderboardByLeagueId(leagueId) {
         JOIN matchplayers mp ON u.user_id = mp.user_id
         JOIN matches m ON mp.match_id = m.id
         JOIN dates d ON m.date_id = d.date_id
+        JOIN leagues l ON l.league_id = d.league_id
         LEFT JOIN scores s ON s.user_id = u.user_id AND s.match_id = m.id
         LEFT JOIN scores opponent ON opponent.match_id = m.id AND opponent.user_id != u.user_id
         WHERE d.league_id = ?

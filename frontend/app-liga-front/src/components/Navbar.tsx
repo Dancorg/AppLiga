@@ -31,11 +31,9 @@ export default function Navbar() {
                 <span onClick={() => navigate('/leagues')} style={navLink('/leagues')}>
                     {t('nav.leagues')}
                 </span>
-                {user?.role === 'admin' && (
-                    <span onClick={() => navigate('/create-league')} style={navLink('/create-league')}>
-                        {t('nav.createLeague')}
-                    </span>
-                )}
+                <span onClick={() => navigate('/tournaments')} style={navLink('/tournaments')}>
+                    {t('nav.tournaments')}
+                </span>
             </div>
             <div style={styles.right}>
                 <button onClick={toggleLang} style={styles.langBtn}>

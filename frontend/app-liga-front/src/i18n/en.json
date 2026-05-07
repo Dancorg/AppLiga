@@ -1,6 +1,7 @@
 {
     "nav": {
         "leagues": "Leagues",
+        "tournaments": "Tournaments",
         "createLeague": "+ Create League",
         "logout": "Logout"
     },
@@ -23,7 +24,15 @@
     "createLeague": {
         "title": "Create League",
         "placeholder": "League name",
-        "submit": "Create"
+        "submit": "Create",
+        "rules": "Rules",
+        "hit_head": "Head (pts)",
+        "hit_torso": "Torso (pts)",
+        "hit_arm": "Arm (pts)",
+        "hit_legs": "Legs (pts)",
+        "scoring_mode": "Scoring mode",
+        "scoring_total": "Total score",
+        "scoring_difference": "Point difference"
     },
     "dates": {
         "title": "Dates",
@@ -78,6 +87,43 @@
         "loading": "Creating account...",
         "hasAccount": "Already a user?",
         "login": "Login"
+    },
+    "tournament": {
+        "title": "Tournaments",
+        "noTournaments": "No tournaments yet.",
+        "create": "+ Create Tournament",
+        "back": "← Back",
+        "join": "Join Tournament",
+        "start": "Start Tournament",
+        "advance": "Advance to Elimination",
+        "enrolled": "Enrolled Players",
+        "pools": "Pool Stage",
+        "elimination": "Elimination",
+        "tbd": "TBD",
+        "matchPending": "Awaiting match",
+        "pool": "Pool",
+        "status": {
+            "open": "Open",
+            "locked": "In Progress",
+            "finished": "Finished"
+        }
+    },
+    "createTournament": {
+        "title": "Create Tournament",
+        "placeholder": "Tournament name",
+        "submit": "Create",
+        "rules": "Hit Points",
+        "configuration": "Configuration",
+        "hit_head": "Head (pts)",
+        "hit_torso": "Torso (pts)",
+        "hit_arm": "Arm (pts)",
+        "hit_legs": "Legs (pts)",
+        "scoring_mode": "Scoring mode",
+        "scoring_total": "Total score",
+        "scoring_difference": "Point difference",
+        "pool_size": "Players per pool",
+        "players_advance": "Players advancing",
+        "elim_stages": "Elimination rounds"
     },
     "common": {
         "loading": "Loading...",

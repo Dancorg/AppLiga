@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTimedMessage } from "../../hooks/useTimedMessage";
 import type { Match } from "../../types"
 import * as api from "./api";
 import { sortMatchesNoConsecutivePlayers } from "../../utils/sortMatches";
@@ -6,7 +7,7 @@ import { sortMatchesNoConsecutivePlayers } from "../../utils/sortMatches";
 export function useMatches(dateId: number) {
     const [matches, setMatches] = useState<Match[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError, clearError] = useTimedMessage();
 
     const fetchMatches = async () => {
         try {
@@ -25,7 +26,7 @@ export function useMatches(dateId: number) {
     const handleGenerateMatches = async () => {
         try{
             setLoading(true);
-            setError(null);
+            clearError();
             await api.generateMatches(dateId);
             await fetchMatches();
         } catch (err: unknown) {
@@ -38,7 +39,7 @@ export function useMatches(dateId: number) {
     const handleDeleteMatch = async (matchId: number) => {
         try {
             setLoading(true);
-            setError(null);
+            clearError();
             await api.deleteMatch(matchId);
             setMatches((prev) => prev.filter((m) => m.id !== matchId));
         } catch (err: unknown) {

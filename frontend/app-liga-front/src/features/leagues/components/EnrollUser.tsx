@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { enrollUserByUsername } from '../api';
 import { useTranslation } from 'react-i18next';
+import { useTimedMessage } from '../../../hooks/useTimedMessage';
 
 export default function EnrollUser({ leagueId }: { leagueId: number }) {
     const [username, setUsername] = useState('');
-    const [message, setMessage] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [message, setMessage, clearMessage] = useTimedMessage();
+    const [error, setError, clearError] = useTimedMessage();
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
 
     const handleEnroll = async () => {
         if (!username.trim()) return;
         setLoading(true);
-        setMessage(null);
-        setError(null);
+        clearMessage();
+        clearError();
         try {
             await enrollUserByUsername(leagueId, username.trim());
             setMessage(`${username} ${t('enroll.success')}`);

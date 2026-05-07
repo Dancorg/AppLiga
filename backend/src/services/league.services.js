@@ -2,30 +2,32 @@ import { pool } from '../config/db.js';
 
 // this needs to be refactored, move db operations to a model file, and then call those from a controller file
 
-export const createLeague = async (name) => {
+export const createLeague = async (name, rules = {}) => {
     const conn = await pool.getConnection();
 
     try {
         await conn.beginTransaction();
-        console.log('Creating league with name:', name);
-        if (!name) {
-            throw new Error('Name is required');
-        }
+        if (!name) throw new Error('Name is required');
+
+        const hit_head     = rules.hit_head     ?? 3;
+        const hit_torso    = rules.hit_torso    ?? 2;
+        const hit_arm      = rules.hit_arm      ?? 1;
+        const hit_legs     = rules.hit_legs     ?? 1;
+        const scoring_mode = rules.scoring_mode ?? 'total';
 
         const [leagueResult] = await conn.query(
-            'INSERT INTO leagues (name) VALUES (?)',
-            [name]
+            'INSERT INTO leagues (name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode) VALUES (?, ?, ?, ?, ?, ?)',
+            [name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode]
         );
 
         const leagueId = leagueResult.insertId;
-
         await conn.commit();
 
-        return { league_id: leagueId, name };
+        return { league_id: leagueId, name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode };
     } catch (error) {
         await conn.rollback();
         throw error;
-    }finally {
+    } finally {
         conn.release();
     }
 };

@@ -1,24 +1,27 @@
 import { useLeagues } from "../features/leagues/hooks";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../auth/AuthContext";
 
 export default function LeaguesPage() {
     const { leagues, loading } = useLeagues();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const { t } = useTranslation();
 
     if (loading) return <p>{t('common.loading')}</p>;
 
-    if (leagues.length === 0) return (
-        <div>
-            <h1>{t('leagues.title')}</h1>
-            <p>{t('leagues.noLeagues')}</p>
-        </div>
-    );
-
     return (
         <div>
             <h1>{t('leagues.title')}</h1>
+
+            {user?.role === 'admin' && (
+                <button onClick={() => navigate('/create-league')} style={{ marginBottom: '16px', padding: '8px 20px', cursor: 'pointer' }}>
+                    {t('nav.createLeague')}
+                </button>
+            )}
+
+            {leagues.length === 0 && <p>{t('leagues.noLeagues')}</p>}
             {leagues.map((league) => (
                 <button
                     key={league.league_id}

@@ -1,6 +1,7 @@
 {
     "nav": {
         "leagues": "Ligas",
+        "tournaments": "Torneos",
         "createLeague": "+ Crear Liga",
         "logout": "Cerrar sesión"
     },
@@ -23,7 +24,15 @@
     "createLeague": {
         "title": "Crear Liga",
         "placeholder": "Nombre de la liga",
-        "submit": "Crear"
+        "submit": "Crear",
+        "rules": "Reglas",
+        "hit_head": "Cabeza (pts)",
+        "hit_torso": "Torso (pts)",
+        "hit_arm": "Brazo (pts)",
+        "hit_legs": "Piernas (pts)",
+        "scoring_mode": "Modo de puntuación",
+        "scoring_total": "Puntuación total",
+        "scoring_difference": "Diferencia de puntos"
     },
     "dates": {
         "title": "Fechas",
@@ -78,6 +87,43 @@
         "loading": "Creando cuenta...",
         "hasAccount": "¿Ya tienes cuenta?",
         "login": "Iniciar sesión"
+    },
+    "tournament": {
+        "title": "Torneos",
+        "noTournaments": "Aún no hay torneos.",
+        "create": "+ Crear Torneo",
+        "back": "← Atrás",
+        "join": "Unirse al Torneo",
+        "start": "Iniciar Torneo",
+        "advance": "Avanzar a Eliminación",
+        "enrolled": "Jugadores inscriptos",
+        "pools": "Fase de Grupos",
+        "elimination": "Eliminación",
+        "tbd": "A definir",
+        "matchPending": "Combate pendiente",
+        "pool": "Grupo",
+        "status": {
+            "open": "Abierto",
+            "locked": "En curso",
+            "finished": "Finalizado"
+        }
+    },
+    "createTournament": {
+        "title": "Crear Torneo",
+        "placeholder": "Nombre del torneo",
+        "submit": "Crear",
+        "rules": "Puntos por golpe",
+        "configuration": "Configuración",
+        "hit_head": "Cabeza (pts)",
+        "hit_torso": "Torso (pts)",
+        "hit_arm": "Brazo (pts)",
+        "hit_legs": "Piernas (pts)",
+        "scoring_mode": "Modo de puntuación",
+        "scoring_total": "Puntuación total",
+        "scoring_difference": "Diferencia de puntos",
+        "pool_size": "Jugadores por grupo",
+        "players_advance": "Jugadores que avanzan",
+        "elim_stages": "Rondas de eliminación"
     },
     "common": {
         "loading": "Cargando...",

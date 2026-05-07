@@ -5,13 +5,13 @@ import { pool } from '../config/db.js';
 
 export const createLeague = async (req, res) => {
     try {
-        const {name} = req.body;
-        const league = await leagueService.createLeague(name);
+        const { name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode } = req.body;
+        const league = await leagueService.createLeague(name, { hit_head, hit_torso, hit_arm, hit_legs, scoring_mode });
         res.status(201).json(league);
     } catch (error) {
         console.error('Error creating league:', error);
         res.status(500).json({ message: 'Error creating league' });
-    }  
+    }
 };
 
 export const deleteLeague = async (req, res) => {

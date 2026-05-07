@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { useTimedMessage } from "../hooks/useTimedMessage";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import type { Match } from "../types";
+import type { Match, LeagueRules } from "../types";
 import { submitScore } from "../features/matches/api";
 import { useTranslation } from "react-i18next";
 
-const POINTS = { head: 3, torso: 2, arm: 1, legs: 1 } as const;
-type BodyArea = keyof typeof POINTS;
+type BodyArea = 'head' | 'torso' | 'arm' | 'legs';
+type Points = Record<BodyArea, number>;
 
 interface HitEntry { player: 1 | 2; pts: number; }
 
@@ -16,16 +17,17 @@ interface BodyTargetProps {
     onHit: (pts: number) => void;
     disabled: boolean;
     clickLabel: string;
+    points: Points;
 }
 
-function BodyTarget({ label, baseColor, flashColor, onHit, disabled, clickLabel }: BodyTargetProps) {
+function BodyTarget({ label, baseColor, flashColor, onHit, disabled, clickLabel, points }: BodyTargetProps) {
     const [flashing, setFlashing] = useState<BodyArea | null>(null);
 
     const hit = (area: BodyArea) => {
         if (disabled) return;
         setFlashing(area);
         setTimeout(() => setFlashing(null), 150);
-        onHit(POINTS[area]);
+        onHit(points[area]);
     };
 
     const box = (area: BodyArea, width: number, height: number): React.CSSProperties => ({
@@ -42,13 +44,13 @@ function BodyTarget({ label, baseColor, flashColor, onHit, disabled, clickLabel 
     return (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
             <strong style={{ fontSize: "14px" }}>{label}</strong>
-            <div style={box("head", 56, 56)} onClick={() => hit("head")} title="Head (+3)" />
+            <div style={box("head", 56, 56)} onClick={() => hit("head")} title={`Head (+${points.head})`} />
             <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                <div style={box("arm", 28, 64)} onClick={() => hit("arm")} title="Arm (+1)" />
-                <div style={box("torso", 56, 72)} onClick={() => hit("torso")} title="Torso (+2)" />
-                <div style={box("arm", 28, 64)} onClick={() => hit("arm")} title="Arm (+1)" />
+                <div style={box("arm", 28, 64)} onClick={() => hit("arm")} title={`Arm (+${points.arm})`} />
+                <div style={box("torso", 56, 72)} onClick={() => hit("torso")} title={`Torso (+${points.torso})`} />
+                <div style={box("arm", 28, 64)} onClick={() => hit("arm")} title={`Arm (+${points.arm})`} />
             </div>
-            <div style={box("legs", 56, 60)} onClick={() => hit("legs")} title="Legs (+1)" />
+            <div style={box("legs", 56, 60)} onClick={() => hit("legs")} title={`Legs (+${points.legs})`} />
             <span style={{ fontSize: "11px", color: "#666" }}>{clickLabel}</span>
         </div>
     );
@@ -79,14 +81,23 @@ export default function MatchPage() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const { t } = useTranslation();
+
     const match = state?.match as Match | undefined;
+    const rules = state?.rules as LeagueRules | undefined;
     const alreadyScored = match?.score1 != null && match?.score2 != null;
+
+    const points: Points = {
+        head:  rules?.hit_head  ?? 3,
+        torso: rules?.hit_torso ?? 2,
+        arm:   rules?.hit_arm   ?? 1,
+        legs:  rules?.hit_legs  ?? 1,
+    };
 
     const [player1Score, setPlayer1Score] = useState(alreadyScored ? match!.score1! : 0);
     const [player2Score, setPlayer2Score] = useState(alreadyScored ? match!.score2! : 0);
     const [history, setHistory] = useState<HitEntry[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useTimedMessage();
     const [submitted, setSubmitted] = useState(false);
 
     const done = alreadyScored || submitted;
@@ -113,6 +124,7 @@ export default function MatchPage() {
         try {
             setLoading(true);
             setError(null);
+            console.log('[MatchPage] submitting — matchId:', matchId, '| p1:', match?.player1Name, '(id:', match?.player1Id, ') score:', player1Score, '| p2:', match?.player2Name, '(id:', match?.player2Id, ') score:', player2Score);
             await submitScore(Number(matchId), player1Score, player2Score);
             setSubmitted(true);
         } catch (err: unknown) {
@@ -144,10 +156,10 @@ export default function MatchPage() {
             </div>
 
             <div style={styles.arena}>
-                <BodyTarget label={p1} baseColor="#3b82f6" flashColor="#bfdbfe" onHit={(pts) => addHit(2, pts)} disabled={done} clickLabel={t('matchPage.clickToHit')} />
+                <BodyTarget label={p1} baseColor="#3b82f6" flashColor="#bfdbfe" onHit={(pts) => addHit(2, pts)} disabled={done} clickLabel={t('matchPage.clickToHit')} points={points} />
                 <span style={styles.vs}>VS</span>
-                <BodyTarget label={p2} baseColor="#ef4444" flashColor="#fecaca" onHit={(pts) => addHit(1, pts)} disabled={done} clickLabel={t('matchPage.clickToHit')} />
-            </div>
+                <BodyTarget label={p2} baseColor="#ef4444" flashColor="#fecaca" onHit={(pts) => addHit(1, pts)} disabled={done} clickLabel={t('matchPage.clickToHit')} points={points} />
+ma            </div>
 
             {!done && (
                 <div style={styles.controls}>

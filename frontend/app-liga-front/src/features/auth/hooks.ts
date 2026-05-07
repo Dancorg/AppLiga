@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { loginRequest, registerRequest } from "./api";
 import { useAuth } from "../../auth/AuthContext";
+import { useTimedMessage } from "../../hooks/useTimedMessage";
 
 export function useLogin() {
     const { login } = useAuth();
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError, clearError] = useTimedMessage();
 
     const handleLogin = async (email: string, password: string) => {
         try {
             setLoading(true);
-            setError(null);
+            clearError();
 
             const res = await loginRequest({email, password});
             login(res.token);
@@ -33,12 +34,12 @@ export function useRegister(){
     const { login } = useAuth();
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError, clearError] = useTimedMessage();
 
     const handleRegister = async (email: string, username: string, password: string, role: string) => {
         try {
             setLoading(true);
-            setError(null);
+            clearError();
 
             const res = await registerRequest({email, username, password, role});
             login(res.token); // auto login

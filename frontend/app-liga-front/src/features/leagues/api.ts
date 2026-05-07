@@ -1,16 +1,16 @@
 import { apiFetch } from "../../api/client";
-import type { League } from "../../types";
+import type { League, LeagueRules } from "../../types";
 
-export type { League };
+export type { League, LeagueRules };
 
 export const getLeagues = () => apiFetch<League[]>("/leagues/");
 
 export const getLeagueById = (leagueId: number) => apiFetch<League>(`/leagues/${leagueId}`);
 
-export const createLeague = (name: string ) =>
+export const createLeague = (name: string, rules: LeagueRules) =>
     apiFetch<League>("/leagues/create", {
         method: "POST",
-        body: JSON.stringify({name}),
+        body: JSON.stringify({ name, ...rules }),
     });
 
 export const joinLeague = (leagueId: number) =>

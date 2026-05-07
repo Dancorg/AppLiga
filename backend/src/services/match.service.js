@@ -27,7 +27,8 @@ async function generateMatchesForDate(dateId) {
             const matchId = await MatchModel.createMatch(dateId);
             await MatchModel.addPlayerToMatch(matchId, players[i].user_id);
             await MatchModel.addPlayerToMatch(matchId, players[j].user_id);
-            matches.push({ matchId, player1: players[i].user_id, player2: players[j].user_id });
+            const [p1, p2] = [players[i].user_id, players[j].user_id].sort((a, b) => a - b);
+            matches.push({ matchId, player1: p1, player2: p2 });
         }
     }
     console.log('Matches created: ', matches);
@@ -69,6 +70,7 @@ async function getMatch(matchId){
 async function getPlayersFromMatch(matchId){
     try{
         const players = await MatchModel.getPlayers(matchId);
+        console.log(`[getPlayersFromMatch] matchId=${matchId} → players:`, players);
         return players;
     }catch (error) {
         console.log(error);
@@ -87,6 +89,7 @@ async function getScoreFromMatch(matchId){
 
 async function insertScoresToMatch(matchId, p1_id, p1Score, p2_id, p2Score){
     try{
+        console.log(`[insertScoresToMatch] matchId=${matchId} | p1_id=${p1_id} score=${p1Score} | p2_id=${p2_id} score=${p2Score}`);
         await MatchModel.insertScores(matchId, p1_id, p1Score, p2_id, p2Score);
     }catch (error){
         throw new Error('Error inserting scores for match', error);

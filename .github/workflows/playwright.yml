@@ -48,6 +48,11 @@ jobs:
           CREATE TABLE leagues (
             league_id int NOT NULL AUTO_INCREMENT,
             name varchar(100) DEFAULT NULL,
+            hit_head int DEFAULT 3,
+            hit_torso int DEFAULT 2,
+            hit_arm int DEFAULT 1,
+            hit_legs int DEFAULT 1,
+            scoring_mode varchar(20) DEFAULT 'total',
             PRIMARY KEY (league_id)
           );
           CREATE TABLE dates (

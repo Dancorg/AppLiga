@@ -9,7 +9,7 @@ export default function LeagueDetailPage() {
     const { leagueId } = useParams();
     const id = Number(leagueId);
 
-    const { leagueName, leaderboard, handleJoin, loading, error } = useLeagueDetail(id);
+    const { leagueName, rules, leaderboard, handleJoin, loading, error } = useLeagueDetail(id);
     const navigate = useNavigate();
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -53,7 +53,7 @@ export default function LeagueDetailPage() {
             )}
 
             <div style={styles.card}>
-                <DatesManager leagueId={id} />
+                <DatesManager leagueId={id} rules={rules} />
             </div>
 
             {error && <p style={{ color: 'red' }}>{error}</p>}

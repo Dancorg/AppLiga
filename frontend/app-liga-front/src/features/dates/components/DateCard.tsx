@@ -2,10 +2,11 @@ import MatchList from "../../matches/components/MatchList";
 import { useParticipants } from "../hooks";
 import { useAuth } from "../../../auth/AuthContext";
 import type { DateItem } from "../api";
+import type { LeagueRules } from "../../../types";
 import EnrollUserToDate from "./EnrollUserToDate";
 import { useTranslation } from "react-i18next";
 
-export default function DateCard({ date }: { date: DateItem }) {
+export default function DateCard({ date, rules }: { date: DateItem; rules: LeagueRules | null }) {
     const { user } = useAuth();
     const { participants, loading, error, joinDate, enrollUser } = useParticipants(date.date_id);
     const isParticipant = participants.some(p => p.user_id === user?.userId);
@@ -31,7 +32,7 @@ export default function DateCard({ date }: { date: DateItem }) {
                 </ul>
             </div>
 
-            <MatchList dateId={date.date_id} />
+            <MatchList dateId={date.date_id} rules={rules} />
         </div>
     );
 }
