@@ -9,9 +9,8 @@ async function createTournament(name, rules = {}) {
         hit_arm:         rules.hit_arm         ?? 1,
         hit_legs:        rules.hit_legs        ?? 1,
         scoring_mode:    rules.scoring_mode    ?? 'total',
-        pool_size:       rules.pool_size       ?? 4,
+        allow_ties:      rules.allow_ties      ?? true,
         players_advance: rules.players_advance ?? 2,
-        elim_stages:     rules.elim_stages     ?? 2,
     };
     return TournamentModel.createTournament(name, config);
 }
@@ -57,16 +56,24 @@ async function startTournament(tourneyId) {
     const players = await TournamentModel.getEnrolledPlayers(tourneyId);
     if (players.length < 2) throw new Error('Not enough players enrolled');
 
-    const { pool_size, players_advance, elim_stages } = tournament;
+    const { players_advance } = tournament;
+
+    // Find the largest power-of-2 number of pools where each pool has > players_advance players
+    let numPools = 1;
+    let next = 2;
+    while (Math.floor(players.length / next) > players_advance) {
+        numPools = next;
+        next *= 2;
+    }
+
+    const actualElimStages = Math.floor(Math.log2(Math.max(1, numPools * players_advance)));
 
     // Shuffle players for random pool assignment
     const shuffled = [...players].sort(() => Math.random() - 0.5);
 
-    // Divide into pools
-    const poolGroups = [];
-    for (let i = 0; i < shuffled.length; i += pool_size) {
-        poolGroups.push(shuffled.slice(i, i + pool_size));
-    }
+    // Distribute players as evenly as possible across pools (round-robin)
+    const poolGroups = Array.from({ length: numPools }, () => []);
+    shuffled.forEach((player, i) => poolGroups[i % numPools].push(player));
 
     // Create each pool and round-robin matches within it
     for (let i = 0; i < poolGroups.length; i++) {
@@ -89,9 +96,9 @@ async function startTournament(tourneyId) {
     }
 
     // Create elimination bracket structure
-    if (elim_stages > 0) {
+    if (actualElimStages > 0) {
         const roundIds = [];
-        for (let r = 1; r <= elim_stages; r++) {
+        for (let r = 1; r <= actualElimStages; r++) {
             const roundName = r === 1 ? 'final'
                 : r === 2 ? 'semifinal'
                 : r === 3 ? 'quarterfinal'
@@ -100,14 +107,10 @@ async function startTournament(tourneyId) {
             roundIds.push(roundId);
         }
 
-        // Build slots from final outward:
-        // round 1 (final): 1 slot, no advances_to
-        // round 2 (semi): 2 slots, each advances_to one of final's slots
-        // round 3 (quarter): 4 slots, pairs advance to each semi slot
         const finalSlotId = await TournamentModel.createElimSlot(roundIds[0], 1, null);
         let prevRoundSlots = [finalSlotId];
 
-        for (let r = 1; r < elim_stages; r++) {
+        for (let r = 1; r < actualElimStages; r++) {
             const currentSlots = [];
             for (let s = 0; s < prevRoundSlots.length; s++) {
                 const slot1 = await TournamentModel.createElimSlot(roundIds[r], s * 2 + 1, prevRoundSlots[s]);
@@ -120,7 +123,7 @@ async function startTournament(tourneyId) {
 
     await TournamentModel.updateTournamentStatus(tourneyId, 'locked');
 
-    return { pools: poolGroups.length, playersPerPool: pool_size, elimStages: elim_stages };
+    return { pools: numPools, elimStages: actualElimStages };
 }
 
 async function advanceToElimination(tourneyId) {
@@ -128,14 +131,14 @@ async function advanceToElimination(tourneyId) {
     if (!tournament) throw new Error('Tournament not found');
     if (tournament.status !== 'locked') throw new Error('Tournament pool stage is not active');
 
-    const { players_advance, elim_stages } = tournament;
+    const { players_advance } = tournament;
 
-    if (elim_stages === 0) {
+    const pools = await TournamentModel.getPools(tourneyId);
+    const elimRounds = await TournamentModel.getElimRounds(tourneyId);
+    if (elimRounds.length === 0) {
         await TournamentModel.updateTournamentStatus(tourneyId, 'finished');
         return { message: 'Tournament finished (pool stage only)' };
     }
-
-    const pools = await TournamentModel.getPools(tourneyId);
 
     // Verify all pool matches are scored
     for (const p of pools) {
@@ -157,7 +160,6 @@ async function advanceToElimination(tourneyId) {
     }
 
     // Get first-round slots (highest round_number = last created = first played)
-    const elimRounds = await TournamentModel.getElimRounds(tourneyId);
     const firstRound = elimRounds[0]; // ordered DESC, so highest round_number first
     const firstRoundSlots = await TournamentModel.getSlotsByRound(firstRound.round_id);
 

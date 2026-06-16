@@ -15,7 +15,12 @@ export function useLeagues() {
             .finally(() => setLoading(false));
     }, []);
 
-    return { leagues, loading};
+    const handleDelete = async (leagueId: number) => {
+        await api.deleteLeague(leagueId);
+        setLeagues(prev => prev.filter(l => l.league_id !== leagueId));
+    };
+
+    return { leagues, loading, handleDelete };
 }
 
 export function useLeagueCreation(){
@@ -29,7 +34,7 @@ export function useLeagueCreation(){
             setLoading(true);
             clearError();
 
-            const res = await api.createLeague(name, { hit_head: 3, hit_torso: 2, hit_arm: 1, hit_legs: 1, scoring_mode: 'total' });
+            const res = await api.createLeague(name, { hit_head: 3, hit_torso: 2, hit_arm: 1, hit_legs: 1, scoring_mode: 'total', allow_ties: true });
 
             setLeagueId(res.league_id);
             setDates([]);
@@ -86,7 +91,7 @@ export function useLeagueDetail(leagueId: number) {
     useEffect(() => {
         api.getLeagueById(leagueId).then(l => {
             setLeagueName(l.name);
-            setRules({ hit_head: l.hit_head, hit_torso: l.hit_torso, hit_arm: l.hit_arm, hit_legs: l.hit_legs, scoring_mode: l.scoring_mode });
+            setRules({ hit_head: l.hit_head, hit_torso: l.hit_torso, hit_arm: l.hit_arm, hit_legs: l.hit_legs, scoring_mode: l.scoring_mode, allow_ties: l.allow_ties });
         }).catch(() => {});
         api.getLeaderboard(leagueId).then(data => setLeaderboard(data as LeaderboardEntry[])).catch(() => {});
     }, [leagueId]);

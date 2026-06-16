@@ -63,6 +63,23 @@ async function getScore(matchId) {
     return score;
 }
 
+async function getMatchContext(matchId) {
+    const [rows] = await pool.query(
+        `SELECT COALESCE(l.allow_ties, t_pool.allow_ties, t_elim.allow_ties, 1) AS allow_ties
+         FROM matches m
+         LEFT JOIN dates d ON d.date_id = m.date_id
+         LEFT JOIN leagues l ON l.league_id = d.league_id
+         LEFT JOIN tournament_pools tp ON tp.pool_id = m.pool_id
+         LEFT JOIN tournaments t_pool ON t_pool.tourney_id = tp.tourney_id
+         LEFT JOIN elim_slots es ON es.slot_id = m.elim_slot_id
+         LEFT JOIN elim_rounds er ON er.round_id = es.round_id
+         LEFT JOIN tournaments t_elim ON t_elim.tourney_id = er.tourney_id
+         WHERE m.id = ?`,
+        [matchId]
+    );
+    return rows[0];
+}
+
 async function insertScores(matchId, p1_id, p1Score, p2_id, p2Score) {
     console.log(`[insertScores] INSERT — (user_id=${p1_id}, match_id=${matchId}, score=${p1Score}), (user_id=${p2_id}, match_id=${matchId}, score=${p2Score})`);
     await pool.query('INSERT INTO scores (user_id, match_id, score) VALUES (?,?,?),(?,?,?)',
@@ -84,6 +101,7 @@ const matchModel = {
     getMatch,
     getPlayers,
     getScore,
+    getMatchContext,
     insertScores
 };
 

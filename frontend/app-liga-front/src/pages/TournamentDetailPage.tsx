@@ -39,12 +39,13 @@ export default function TournamentDetailPage() {
         hit_arm: detail.hit_arm,
         hit_legs: detail.hit_legs,
         scoring_mode: detail.scoring_mode,
+        allow_ties: detail.allow_ties,
     };
 
     const allPoolsScored = detail.pools.length > 0 &&
         detail.pools.every(p => p.matches.length > 0 && p.matches.every(m => m.score1 != null && m.score2 != null));
 
-    const handleEnrollSubmit = async (e: React.FormEvent) => {
+    const handleEnrollSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const ok = await handleEnroll(enrollUsername);
         if (ok) { setEnrollMsg(`${enrollUsername} ${t('enroll.success')}`); setEnrollUsername(''); }

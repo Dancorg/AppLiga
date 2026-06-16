@@ -5,6 +5,7 @@ export interface LeagueRules {
     hit_arm: number;
     hit_legs: number;
     scoring_mode: 'total' | 'difference';
+    allow_ties: boolean;
 }
 
 export interface League extends LeagueRules {
@@ -51,9 +52,8 @@ export interface Tournament {
     hit_arm: number;
     hit_legs: number;
     scoring_mode: 'total' | 'difference';
-    pool_size: number;
+    allow_ties: boolean;
     players_advance: number;
-    elim_stages: number;
 }
 
 export interface TournamentPool {

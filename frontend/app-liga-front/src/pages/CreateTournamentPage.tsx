@@ -12,9 +12,8 @@ const DEFAULT_CONFIG: Config = {
     hit_arm: 1,
     hit_legs: 1,
     scoring_mode: 'total',
-    pool_size: 4,
+    allow_ties: true,
     players_advance: 2,
-    elim_stages: 2,
 };
 
 export default function CreateTournamentPage() {
@@ -71,15 +70,22 @@ export default function CreateTournamentPage() {
                             <option value="difference">{t('createTournament.scoring_difference')}</option>
                         </select>
                     </label>
+
+                    <label style={{ ...styles.label, flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
+                        <input
+                            type="checkbox"
+                            checked={config.allow_ties}
+                            onChange={e => setConfig(prev => ({ ...prev, allow_ties: e.target.checked }))}
+                        />
+                        {t('createTournament.allow_ties')}
+                    </label>
                 </div>
 
                 <div style={styles.card}>
                     <h3 style={styles.sectionTitle}>{t('createTournament.configuration')}</h3>
                     <div style={styles.grid}>
                         {([
-                            ['pool_size', 2, 16],
                             ['players_advance', 1, 8],
-                            ['elim_stages', 0, 4],
                         ] as const).map(([key, min, max]) => (
                             <label key={key} style={styles.label}>
                                 {t(`createTournament.${key}`)}

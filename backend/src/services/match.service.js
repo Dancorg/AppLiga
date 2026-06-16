@@ -96,6 +96,10 @@ async function insertScoresToMatch(matchId, p1_id, p1Score, p2_id, p2Score){
     }
 }
 
+async function getMatchContext(matchId) {
+    return MatchModel.getMatchContext(matchId);
+}
+
 const matchService = {
     generateMatchesForDate,
     deleteMatch: deleteMatchForDate,
@@ -104,6 +108,7 @@ const matchService = {
     getMatchesById,
     getPlayersFromMatch,
     getScoreFromMatch,
+    getMatchContext,
     insertScoresToMatch
 };
 

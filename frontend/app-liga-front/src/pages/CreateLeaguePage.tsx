@@ -10,6 +10,7 @@ const DEFAULT_RULES: LeagueRules = {
     hit_arm: 1,
     hit_legs: 1,
     scoring_mode: 'total',
+    allow_ties: true,
 };
 
 export default function CreateLeaguePage() {
@@ -70,6 +71,15 @@ export default function CreateLeaguePage() {
                             <option value="total">{t('createLeague.scoring_total')}</option>
                             <option value="difference">{t('createLeague.scoring_difference')}</option>
                         </select>
+                    </label>
+
+                    <label style={{ ...styles.label, flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
+                        <input
+                            type="checkbox"
+                            checked={rules.allow_ties}
+                            onChange={(e) => setRules(prev => ({ ...prev, allow_ties: e.target.checked }))}
+                        />
+                        {t('createLeague.allow_ties')}
                     </label>
                 </div>
 

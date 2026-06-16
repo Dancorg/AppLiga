@@ -32,7 +32,8 @@
         "hit_legs": "Piernas (pts)",
         "scoring_mode": "Modo de puntuación",
         "scoring_total": "Puntuación total",
-        "scoring_difference": "Diferencia de puntos"
+        "scoring_difference": "Diferencia de puntos",
+        "allow_ties": "Permitir empates"
     },
     "dates": {
         "title": "Fechas",
@@ -65,7 +66,8 @@
         "submitting": "Enviando...",
         "submitted": "¡Resultado enviado!",
         "alreadyScored": "Este combate ya esta resuelto.",
-        "clickToHit": "clic para registrar golpe"
+        "clickToHit": "clic para registrar golpe",
+        "tieNotAllowed": "Los empates no están permitidos en este combate"
     },
     "login": {
         "title": "Iniciar sesión",
@@ -99,6 +101,7 @@
         "enrolled": "Jugadores inscriptos",
         "pools": "Fase de Grupos",
         "elimination": "Eliminación",
+        "winner": "Ganador",
         "tbd": "A definir",
         "matchPending": "Combate pendiente",
         "pool": "Grupo",
@@ -121,12 +124,15 @@
         "scoring_mode": "Modo de puntuación",
         "scoring_total": "Puntuación total",
         "scoring_difference": "Diferencia de puntos",
+        "allow_ties": "Permitir empates",
         "pool_size": "Jugadores por grupo",
         "players_advance": "Jugadores que avanzan",
         "elim_stages": "Rondas de eliminación"
     },
     "common": {
         "loading": "Cargando...",
-        "notFound": "Página no encontrada :("
+        "notFound": "Página no encontrada :(",
+        "delete": "Eliminar",
+        "deleteConfirm": "¿Estás seguro de que querés eliminar"
     }
 }

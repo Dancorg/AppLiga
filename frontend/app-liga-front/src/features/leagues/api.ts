@@ -26,3 +26,6 @@ export const enrollUserByUsername = (leagueId: number, username: string) =>
         method: 'POST',
         body: JSON.stringify({ username }),
     });
+
+export const deleteLeague = (leagueId: number) =>
+    apiFetch(`/leagues/${leagueId}`, { method: 'DELETE' });

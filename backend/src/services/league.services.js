@@ -14,16 +14,17 @@ export const createLeague = async (name, rules = {}) => {
         const hit_arm      = rules.hit_arm      ?? 1;
         const hit_legs     = rules.hit_legs     ?? 1;
         const scoring_mode = rules.scoring_mode ?? 'total';
+        const allow_ties   = rules.allow_ties   ?? true;
 
         const [leagueResult] = await conn.query(
-            'INSERT INTO leagues (name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode) VALUES (?, ?, ?, ?, ?, ?)',
-            [name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode]
+            'INSERT INTO leagues (name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, allow_ties) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, allow_ties]
         );
 
         const leagueId = leagueResult.insertId;
         await conn.commit();
 
-        return { league_id: leagueId, name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode };
+        return { league_id: leagueId, name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, allow_ties };
     } catch (error) {
         await conn.rollback();
         throw error;
@@ -67,6 +68,10 @@ export const deleteLeague = async (leagueId, res) => {
 
         console.log('Deleting league with ID:', leagueId);
 
+        await conn.query('DELETE s FROM scores s JOIN matches m ON m.id = s.match_id JOIN dates d ON d.date_id = m.date_id WHERE d.league_id = ?', [leagueId]);
+        await conn.query('DELETE mp FROM matchplayers mp JOIN matches m ON m.id = mp.match_id JOIN dates d ON d.date_id = m.date_id WHERE d.league_id = ?', [leagueId]);
+        await conn.query('DELETE m FROM matches m JOIN dates d ON d.date_id = m.date_id WHERE d.league_id = ?', [leagueId]);
+        await conn.query('DELETE p FROM participations p JOIN dates d ON d.date_id = p.date_id WHERE d.league_id = ?', [leagueId]);
         await conn.query('DELETE FROM enrollments WHERE league_id = ?', [leagueId]);
         await conn.query('DELETE FROM dates WHERE league_id = ?', [leagueId]);
         await conn.query('DELETE FROM leagues WHERE league_id = ?', [leagueId]);

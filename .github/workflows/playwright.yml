@@ -53,7 +53,65 @@ jobs:
             hit_arm int DEFAULT 1,
             hit_legs int DEFAULT 1,
             scoring_mode varchar(20) DEFAULT 'total',
+            allow_ties tinyint(1) DEFAULT 1,
             PRIMARY KEY (league_id)
+          );
+          CREATE TABLE tournaments (
+            tourney_id int NOT NULL AUTO_INCREMENT,
+            name varchar(100) DEFAULT NULL,
+            hit_head int DEFAULT 3,
+            hit_torso int DEFAULT 2,
+            hit_arm int DEFAULT 1,
+            hit_legs int DEFAULT 1,
+            scoring_mode varchar(20) DEFAULT 'total',
+            allow_ties tinyint(1) DEFAULT 1,
+            players_advance int DEFAULT 2,
+            status varchar(20) DEFAULT 'open',
+            PRIMARY KEY (tourney_id)
+          );
+          CREATE TABLE tournament_enrollments (
+            id int NOT NULL AUTO_INCREMENT,
+            tourney_id int DEFAULT NULL,
+            user_id int DEFAULT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY unique_tourney_user (tourney_id, user_id),
+            CONSTRAINT te_tourney_fk FOREIGN KEY (tourney_id) REFERENCES tournaments (tourney_id),
+            CONSTRAINT te_user_fk FOREIGN KEY (user_id) REFERENCES sc_users (user_id) ON DELETE CASCADE
+          );
+          CREATE TABLE tournament_pools (
+            pool_id int NOT NULL AUTO_INCREMENT,
+            tourney_id int DEFAULT NULL,
+            pool_number int DEFAULT NULL,
+            PRIMARY KEY (pool_id),
+            CONSTRAINT tp_tourney_fk FOREIGN KEY (tourney_id) REFERENCES tournaments (tourney_id)
+          );
+          CREATE TABLE pool_members (
+            id int NOT NULL AUTO_INCREMENT,
+            pool_id int DEFAULT NULL,
+            user_id int DEFAULT NULL,
+            PRIMARY KEY (id),
+            CONSTRAINT pm_pool_fk FOREIGN KEY (pool_id) REFERENCES tournament_pools (pool_id),
+            CONSTRAINT pm_user_fk FOREIGN KEY (user_id) REFERENCES sc_users (user_id) ON DELETE CASCADE
+          );
+          CREATE TABLE elim_rounds (
+            round_id int NOT NULL AUTO_INCREMENT,
+            tourney_id int DEFAULT NULL,
+            round_number int DEFAULT NULL,
+            round_name varchar(50) DEFAULT NULL,
+            PRIMARY KEY (round_id),
+            CONSTRAINT er_tourney_fk FOREIGN KEY (tourney_id) REFERENCES tournaments (tourney_id)
+          );
+          CREATE TABLE elim_slots (
+            slot_id int NOT NULL AUTO_INCREMENT,
+            round_id int DEFAULT NULL,
+            slot_number int DEFAULT NULL,
+            advances_to_slot_id int DEFAULT NULL,
+            player1_id int DEFAULT NULL,
+            player2_id int DEFAULT NULL,
+            winner_id int DEFAULT NULL,
+            PRIMARY KEY (slot_id),
+            CONSTRAINT es_round_fk FOREIGN KEY (round_id) REFERENCES elim_rounds (round_id),
+            CONSTRAINT es_advances_fk FOREIGN KEY (advances_to_slot_id) REFERENCES elim_slots (slot_id)
           );
           CREATE TABLE dates (
             date_id int NOT NULL AUTO_INCREMENT,
@@ -77,9 +135,13 @@ jobs:
           CREATE TABLE matches (
             id int NOT NULL AUTO_INCREMENT,
             date_id int DEFAULT NULL,
+            pool_id int DEFAULT NULL,
+            elim_slot_id int DEFAULT NULL,
             PRIMARY KEY (id),
             KEY matches_ibfk_1 (date_id),
-            CONSTRAINT matches_ibfk_1 FOREIGN KEY (date_id) REFERENCES dates (date_id) ON DELETE CASCADE
+            CONSTRAINT matches_ibfk_1 FOREIGN KEY (date_id) REFERENCES dates (date_id) ON DELETE CASCADE,
+            CONSTRAINT matches_pool_fk FOREIGN KEY (pool_id) REFERENCES tournament_pools (pool_id),
+            CONSTRAINT matches_slot_fk FOREIGN KEY (elim_slot_id) REFERENCES elim_slots (slot_id)
           );
           CREATE TABLE matchplayers (
             id int NOT NULL AUTO_INCREMENT,

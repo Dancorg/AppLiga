@@ -121,9 +121,12 @@ export default function MatchPage() {
 
     const handleSubmit = async () => {
         if (!matchId) return;
+        if (rules?.allow_ties === false && player1Score === player2Score) {
+            setError(t('matchPage.tieNotAllowed'));
+            return;
+        }
         try {
             setLoading(true);
-            setError(null);
             console.log('[MatchPage] submitting — matchId:', matchId, '| p1:', match?.player1Name, '(id:', match?.player1Id, ') score:', player1Score, '| p2:', match?.player2Name, '(id:', match?.player2Id, ') score:', player2Score);
             await submitScore(Number(matchId), player1Score, player2Score);
             setSubmitted(true);

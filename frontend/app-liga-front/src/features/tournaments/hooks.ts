@@ -13,7 +13,12 @@ export function useTournaments() {
             .finally(() => setLoading(false));
     }, []);
 
-    return { tournaments, loading };
+    const handleDelete = async (tourneyId: number) => {
+        await api.deleteTournament(tourneyId);
+        setTournaments(prev => prev.filter(t => t.tourney_id !== tourneyId));
+    };
+
+    return { tournaments, loading, handleDelete };
 }
 
 export function useTournamentDetail(tourneyId: number) {

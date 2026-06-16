@@ -8,8 +8,19 @@ export default function EliminationBracket({ rounds, rules }: { rounds: ElimRoun
 
     if (rounds.length === 0) return null;
 
-    // API returns rounds ordered by round_number DESC (quarterfinal first → final last)
+    // API returns rounds DESC (quarterfinal first → final last)
+    const finalSlot = rounds[rounds.length - 1]?.slots[0];
+    const winnerName = finalSlot?.winner_id != null && finalSlot.match
+        ? (finalSlot.winner_id === finalSlot.match.player1Id ? finalSlot.match.player1Name : finalSlot.match.player2Name)
+        : null;
+
     return (
+        <>
+        {winnerName && (
+            <div style={styles.winnerBanner}>
+                🏆 {t('tournament.winner')}: <strong>{winnerName}</strong>
+            </div>
+        )}
         <div style={styles.bracket}>
             {rounds.map(round => (
                 <div key={round.round_id} style={styles.roundCol}>
@@ -19,7 +30,7 @@ export default function EliminationBracket({ rounds, rules }: { rounds: ElimRoun
                             const m = slot.match;
                             const hasPlayers = slot.player1_id != null && slot.player2_id != null;
                             const isScored = m?.score1 != null && m?.score2 != null;
-                            const isClickable = m && !isScored;
+                            const isClickable = m && hasPlayers;
 
                             return (
                                 <div
@@ -55,10 +66,12 @@ export default function EliminationBracket({ rounds, rules }: { rounds: ElimRoun
                 </div>
             ))}
         </div>
+        </>
     );
 }
 
 const styles: Record<string, React.CSSProperties> = {
+    winnerBanner: { padding: '10px 16px', marginBottom: '12px', background: '#fefce8', border: '1px solid #fde047', borderRadius: '8px', fontSize: '15px', color: '#713f12' },
     bracket: { display: 'flex', gap: '24px', overflowX: 'auto', padding: '4px 0' },
     roundCol: { display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '160px' },
     roundTitle: { margin: '0 0 8px', fontSize: '13px', fontWeight: 700, color: '#374151', textTransform: 'capitalize' },

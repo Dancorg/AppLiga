@@ -32,7 +32,8 @@
         "hit_legs": "Legs (pts)",
         "scoring_mode": "Scoring mode",
         "scoring_total": "Total score",
-        "scoring_difference": "Point difference"
+        "scoring_difference": "Point difference",
+        "allow_ties": "Allow ties"
     },
     "dates": {
         "title": "Dates",
@@ -65,7 +66,8 @@
         "submitting": "Submitting...",
         "submitted": "Score submitted!",
         "alreadyScored": "This match has already been scored.",
-        "clickToHit": "click to register hit"
+        "clickToHit": "click to register hit",
+        "tieNotAllowed": "Ties are not allowed in this match"
     },
     "login": {
         "title": "Login",
@@ -99,6 +101,7 @@
         "enrolled": "Enrolled Players",
         "pools": "Pool Stage",
         "elimination": "Elimination",
+        "winner": "Winner",
         "tbd": "TBD",
         "matchPending": "Awaiting match",
         "pool": "Pool",
@@ -121,12 +124,15 @@
         "scoring_mode": "Scoring mode",
         "scoring_total": "Total score",
         "scoring_difference": "Point difference",
+        "allow_ties": "Allow ties",
         "pool_size": "Players per pool",
         "players_advance": "Players advancing",
         "elim_stages": "Elimination rounds"
     },
     "common": {
         "loading": "Loading...",
-        "notFound": "Page not found :("
+        "notFound": "Page not found :(",
+        "delete": "Delete",
+        "deleteConfirm": "Are you sure you want to delete"
     }
 }

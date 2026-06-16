@@ -72,6 +72,11 @@ async function submitScore(req, res){
             return res.status(400).json({ message: 'Scores must be non-negative numbers' });
         }
 
+        const context = await matchService.getMatchContext(matchId);
+        if (context && !context.allow_ties && player1_score === player2_score) {
+            return res.status(400).json({ message: 'Ties are not allowed in this match' });
+        }
+
         const players = await matchService.getPlayersFromMatch(matchId);
         console.log(`[submitScore] players fetched from DB:`, players);
 

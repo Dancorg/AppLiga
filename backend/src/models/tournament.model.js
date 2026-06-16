@@ -2,13 +2,13 @@ import { pool } from '../config/db.js';
 
 // ── Tournament ──────────────────────────────────────────────────────────────
 
-async function createTournament(name, { hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, pool_size, players_advance, elim_stages }) {
+async function createTournament(name, { hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, players_advance, allow_ties = true }) {
     const [result] = await pool.query(
-        `INSERT INTO tournaments (name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, pool_size, players_advance, elim_stages, status)
-         VALUES (?,?,?,?,?,?,?,?,?,'open')`,
-        [name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, pool_size, players_advance, elim_stages]
+        `INSERT INTO tournaments (name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, players_advance, allow_ties, status)
+         VALUES (?,?,?,?,?,?,?,?,'open')`,
+        [name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, players_advance, allow_ties]
     );
-    return { tourney_id: result.insertId, name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, pool_size, players_advance, elim_stages, status: 'open' };
+    return { tourney_id: result.insertId, name, hit_head, hit_torso, hit_arm, hit_legs, scoring_mode, players_advance, allow_ties, status: 'open' };
 }
 
 async function getTournaments() {
@@ -22,6 +22,20 @@ async function getTournamentById(tourneyId) {
 }
 
 async function deleteTournament(tourneyId) {
+    // Pool match cleanup
+    await pool.query('DELETE s FROM scores s JOIN matches m ON m.id = s.match_id JOIN tournament_pools tp ON tp.pool_id = m.pool_id WHERE tp.tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE mp FROM matchplayers mp JOIN matches m ON m.id = mp.match_id JOIN tournament_pools tp ON tp.pool_id = m.pool_id WHERE tp.tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE m FROM matches m JOIN tournament_pools tp ON tp.pool_id = m.pool_id WHERE tp.tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE pm FROM pool_members pm JOIN tournament_pools tp ON tp.pool_id = pm.pool_id WHERE tp.tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE FROM tournament_pools WHERE tourney_id = ?', [tourneyId]);
+    // Elim match cleanup
+    await pool.query('DELETE s FROM scores s JOIN matches m ON m.id = s.match_id JOIN elim_slots es ON es.slot_id = m.elim_slot_id JOIN elim_rounds er ON er.round_id = es.round_id WHERE er.tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE mp FROM matchplayers mp JOIN matches m ON m.id = mp.match_id JOIN elim_slots es ON es.slot_id = m.elim_slot_id JOIN elim_rounds er ON er.round_id = es.round_id WHERE er.tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE m FROM matches m JOIN elim_slots es ON es.slot_id = m.elim_slot_id JOIN elim_rounds er ON er.round_id = es.round_id WHERE er.tourney_id = ?', [tourneyId]);
+    await pool.query('UPDATE elim_slots es JOIN elim_rounds er ON er.round_id = es.round_id SET es.advances_to_slot_id = NULL WHERE er.tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE es FROM elim_slots es JOIN elim_rounds er ON er.round_id = es.round_id WHERE er.tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE FROM elim_rounds WHERE tourney_id = ?', [tourneyId]);
+    await pool.query('DELETE FROM tournament_enrollments WHERE tourney_id = ?', [tourneyId]);
     await pool.query('DELETE FROM tournaments WHERE tourney_id = ?', [tourneyId]);
 }
 
