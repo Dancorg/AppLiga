@@ -205,7 +205,7 @@ jobs:
           VITE_API_BASE: /api
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
         working-directory: .
 
       - name: Wait for backend to be ready
