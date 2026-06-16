@@ -8,7 +8,7 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 1 : undefined,
-    reporter: 'html',
+    reporter: 'list',
     use: {
         trace: 'on-first-retry',
     },
@@ -22,11 +22,11 @@ export default defineConfig({
             testMatch: '**/ui/**/*.spec.{js,ts}',
             use: {
                 ...devices['Desktop Chrome'],
-                baseURL: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+                baseURL: process.env.FRONTEND_URL ?? 'http://localhost:3000',
                 storageState: {
                     cookies: [],
                     origins: [{
-                        origin: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+                        origin: process.env.FRONTEND_URL ?? 'http://localhost:3000',
                         localStorage: [{ name: 'lang', value: 'en' }],
                     }],
                 },

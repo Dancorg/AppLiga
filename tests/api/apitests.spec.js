@@ -1,12 +1,15 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
+test.describe.configure({ mode: 'serial' });
+
 const localhost = 'http://localhost:3000';
 
 
 test.afterEach(async ({ request }) => {
   // clean up the usual 4 test users we create in the tests
   await deleteUser(`test@example.com`, request);
+  await deleteUser(`test1@example.com`, request);
   await deleteUser(`test2@example.com`, request);
   await deleteUser(`test3@example.com`, request);
   await deleteUser(`test4@example.com`, request);
@@ -526,8 +529,8 @@ test(`create and resolve match`, async ({request}) => {
   // Submit score
   const scoreResponse = await request.post(`${localhost}/api/matches/${matchResponseData[0].matchId}/score`, {
     data: {
-      player1_hits: 3,
-      player2_hits: 2
+      player1_score: 3,
+      player2_score: 2
     }
   });
   console.log('Score creation response: ', await scoreResponse.json());
