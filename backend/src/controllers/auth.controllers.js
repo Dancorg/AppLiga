@@ -37,7 +37,7 @@ async function register(req, res) {
         // Create the user
         const userId = await userModel.createUser(email, username, hashedPassword, role);
 
-        const token = jwt.sign({ userId, username, role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
+        const token = jwt.sign({ userId, username, role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION ?? '24h' });
 
         res.status(201).json({ token });
     } catch (error) {
@@ -62,7 +62,7 @@ async function login(req, res) {
         console.log('Creating token for user:', user.user_id, 'with role:', user.role);
         console.log("expiration:",process.env.JWT_EXPIRATION);
 
-        const token = jwt.sign({ userId: user.user_id, username: user.name, role: user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
+        const token = jwt.sign({ userId: user.user_id, username: user.name, role: user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION ?? '24h' });
         console.log('Decdoded token payload:', jwt.decode(token));
 
         res.json({ token });
